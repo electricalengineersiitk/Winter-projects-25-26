@@ -1,3 +1,14 @@
 # Group <number>
 
-Add in any details about your group like members along with roll numbers, etc.
+Group 12
+Mandar Keche 
+Ashmil Saxena 
+Laukik Krishna Joshi 
+Mayank Kumar 
+Mayank Verma 
+Sohan Kolhe 
+Yashvardhan Singh Chauhan 
+Aman Agrawal 
+Harsh Verma 
+Khushi Sharma 
+Ayush Kumar
