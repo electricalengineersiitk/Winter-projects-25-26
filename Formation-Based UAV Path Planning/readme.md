@@ -5,4 +5,6 @@ avoiding obstacles along their paths.
 
 Mentors :- [Somya K](https://github.com/RayZzzzzR) & [Aryan MG](https://github.com/fidgetaryan445)
 
-All weekly resources will be uploaded here 
+All weekly resources will be uploaded here
+
+Assignment 0 Solution link : https://colab.research.google.com/drive/1QlUkfsPrGTi1z_32kBIsLrrUPN1JkHSy?usp=sharing
