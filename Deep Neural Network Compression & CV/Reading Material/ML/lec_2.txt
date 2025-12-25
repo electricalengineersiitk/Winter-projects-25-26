@@ -1,0 +1,14 @@
+MLP-
+
+https://youtu.be/aircAruvnKk?si=CKa6049-_XJSo0ss
+https://youtu.be/IHZwWFHWa-w?si=0gVMogvBIOYLAOnt
+https://youtu.be/Ilg3gGewQ5U?si=Eazvg856ESXBdB9W
+https://youtu.be/tIeHLnjs5U8?si=iC1ES4wWw-bxuhvH
+
+https://d2l.ai/chapter_multilayer-perceptrons/index.html
+
+
+CNN-
+https://www.youtube.com/watch?v=py5byOOHZM8
+
+https://d2l.ai/chapter_convolutional-neural-networks/index.html
