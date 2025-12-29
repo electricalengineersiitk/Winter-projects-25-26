@@ -30,3 +30,6 @@ https://docs.google.com/document/d/1Sl-oi5ErlmIlTbNWZCI66X_8XkwlVpq5kLYGrzj1KIE/
 
 **Assignment 4**
 https://colab.research.google.com/drive/1ZHzzFeQooadtOL_7L8Bi6DS_CHjjzsES?usp=sharing
+## Week 3
+**Resources**
+https://docs.google.com/document/d/1u0jd9fAz2CbfzZU67bsEKHu9qX-4JEdom-9jV5Z2GV8/edit?tab=t.0
