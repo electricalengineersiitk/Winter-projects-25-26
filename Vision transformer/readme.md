@@ -33,3 +33,6 @@ https://colab.research.google.com/drive/1ZHzzFeQooadtOL_7L8Bi6DS_CHjjzsES?usp=sh
 ## Week 3
 **Resources**
 https://docs.google.com/document/d/1u0jd9fAz2CbfzZU67bsEKHu9qX-4JEdom-9jV5Z2GV8/edit?tab=t.0
+
+**Assignment 5**
+https://colab.research.google.com/drive/1F1c2U4Btn6HDeAJu1B91FAQP9vybdmqr#scrollTo=6BK65b0ctVYI
