@@ -1,0 +1,35 @@
+Problem 1:
+Sample 1: YES
+Sample 2: NO
+Test 1: YES
+Test 2: NO
+Test 3: YES
+Test 4: NO 
+Test 5: NO
+
+Problem 2:
+Sample 1: YES 0 1 0
+Sample 2: NO
+Test 1: YES 0 1 0 1
+Test 2: YES 0 1 0 1 0
+Test 3: YES 0 1 0 1
+Test 4: NO
+Test 5: YES 0
+
+Problem 3:
+Sample 1: 5
+Sample 2: -1
+Test 1: 6
+Test 2: 3
+Test 3: -1
+Test 4:  8
+Test 5: 0
+
+Problem 4:
+Sample 1: 8
+Sample 2: 12
+Test 1: 4
+Test 2: 3
+Test 3: 5
+Test 4: 6
+Test 5: -1
