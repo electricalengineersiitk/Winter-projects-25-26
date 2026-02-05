@@ -1,0 +1,36 @@
+Section A
+1) T
+2) T
+3) F
+4) T
+5) T
+6) F
+7) F
+8) T
+9) T
+10) T
+
+Section B
+3) a) differentiable and continuous
+b)functions that are twice differentiable, which have computable and invertible Hessian matrix can be optimised by Newton's method.
+
+Section C
+1) underfitting happens when the model is too simple to be able to understand any pattern.
+2) High training and test errors indicate high bias ie the model is not able to capture any true relationship in the data.
+3)By averaging predictions from multiple models trained on different subsets of data.
+4)Boosting reduces bias by improving the complexity. Variance depend on noise and regularisation.
+
+Section D
+1)Fewer dimensions, reduce data size, working on time complexity
+2)no, it doesn't change KNN prediction and neither solve the dimensionality problem.
+3)In high dimension space, data points are scattered far apart which leads to failure of KNN because the nearest neighbours are not actually close in very high dimensional space
+4) with small k, we get low bias but high variance. As we increase k, bias increases and variance decreases.
+5) Since SVM is restricted to drawing straight lines to separate classes, KNN is preferred when decision boundary is highly on-linear or irregular.
+
+Section E
+3) It is because they use greedy algorithm. at each step they choose the split that maximises the immediate gain based on present state without caring about future values.
+4) Pre- pruning and post- pruning in order to stop the tree from growing too complex and at the same time allowing the tree to grow fully to fit the training data.
+
+Section F
+1)No. because then the model will have memorized the patterns so we won't be able to generalise it to unseen data
+2)Bagging is creating copies of the model and training parallelly on subsets of data while boosting is training the model sequentially with the next model mainly focussing on data points that the previous model got wrong.
