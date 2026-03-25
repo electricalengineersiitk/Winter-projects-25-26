@@ -1,0 +1,23 @@
+Must Watch :
+
+1. Fourier Series : https://www.youtube.com/watch?v=r6sGWTCMz2k
+
+2. Fourier Tranform : https://www.youtube.com/watch?v=spUNpyF58BY
+
+3. DFT/FFT : https://www.youtube.com/watch?v=QmgJmh2I3Fw
+
+4. Convolution : https://www.youtube.com/watch?v=KuXjwB4LzSA
+
+Additionals :
+
+1. Does math in front of you : https://www.youtube.com/watch?v=2oEt5lbsyhM
+2. More into FFT algo : https://www.youtube.com/watch?v=h7apO7q16V0
+
+Before the first Session, explore Juptyer Notebooks, and especially Google Colab.
+If you wish to use your local Jupyter Notebook, be sure to install the following python libraries :
+1. opencv-python
+2. numpy
+3. matplotlib
+
+We will be using python (version 3.13) in demos, so you might want to use the same version.
+Good Luck :thumbs-up
