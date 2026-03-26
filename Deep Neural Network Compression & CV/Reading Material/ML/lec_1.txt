@@ -1,0 +1,10 @@
+
+K means
+-https://youtu.be/4b5d3muPQmA?si=mFGadTM4IYjj0dF2
+-https://www.youtube.com/watch?v=yR7k19YBqiw&t=339s
+
+Linear Regression
+-https://www.youtube.com/watch?v=4b4MUYve_U8&t=2s
+
+Logistic Regression
+-https://www.youtube.com/watch?v=het9HFqo1TQ&t=476s
