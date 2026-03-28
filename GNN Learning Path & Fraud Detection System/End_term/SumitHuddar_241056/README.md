@@ -4,32 +4,9 @@
 This project uses **Graph Neural Networks (GNNs)** to detect illicit Bitcoin transactions using the **Elliptic dataset**. It implements a full pipeline including data preprocessing, graph construction, model training, and evaluation.
 
 ---
-
-## Repository Structure
-
-```
-.
-├── GNN_Elliptic_Fraud_Detection_Final.ipynb   # Main notebook (full pipeline)
-├── data/                                     # Dataset folder (user must add)
-│   ├── elliptic_txs_features.csv
-│   ├── elliptic_txs_edgelist.csv
-│   ├── elliptic_txs_classes.csv
-├── README.md
-└── report.pdf (optional)
-```
-
----
-
 ## Installation & Setup
 
-### 1.Clone the repository
-
-```bash
-git clone <your-repo-url>
-cd <repo-name>
-```
-
-### 2. Install dependencies
+### 1. Install dependencies
 
 Python ≥ 3.8.
 
