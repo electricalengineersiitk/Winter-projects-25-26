@@ -1,0 +1,175 @@
+# GNN-Based Bitcoin Fraud Detection  
+### Elliptic Dataset — End-to-End Pipeline
+
+This project uses **Graph Neural Networks (GNNs)** to detect illicit Bitcoin transactions using the **Elliptic dataset**. It implements a full pipeline including data preprocessing, graph construction, model training, and evaluation.
+
+---
+
+## Repository Structure
+
+```
+.
+├── GNN_Elliptic_Fraud_Detection_Final.ipynb   # Main notebook (full pipeline)
+├── data/                                     # Dataset folder (user must add)
+│   ├── elliptic_txs_features.csv
+│   ├── elliptic_txs_edgelist.csv
+│   ├── elliptic_txs_classes.csv
+├── README.md
+└── report.pdf (optional)
+```
+
+---
+
+## Installation & Setup
+
+### 1.Clone the repository
+
+```bash
+git clone <your-repo-url>
+cd <repo-name>
+```
+
+### 2. Install dependencies
+
+Python ≥ 3.8.
+
+```bash
+pip install torch torchvision torchaudio
+pip install torch-geometric
+pip install numpy pandas matplotlib seaborn scikit-learn
+```
+
+> Install the correct PyTorch Geometric version based on your system:  
+> https://pytorch-geometric.readthedocs.io/en/latest/install/installation.html
+
+---
+
+## Dataset
+
+Download the dataset from Kaggle:
+
+https://www.kaggle.com/datasets/ellipticco/elliptic-data-set
+
+Place the following files inside a `data/` folder:
+
+- elliptic_txs_features.csv  
+- elliptic_txs_edgelist.csv  
+- elliptic_txs_classes.csv  
+
+---
+
+## How to Run
+
+### Option 1: Jupyter Notebook (Recommended)
+
+```bash
+jupyter notebook
+```
+
+Open:
+
+```
+GNN_Elliptic_Fraud_Detection_Final.ipynb
+```
+
+Run all cells sequentially.
+
+---
+
+### Option 2: VS Code
+
+- Open the notebook in VS Code  
+- Run cells using the Jupyter extension  
+
+---
+
+## Process
+
+### 1. Data Preprocessing
+- Merge features with labels  
+- Label mapping:  
+  - 1 → illicit  
+  - 2 → licit  
+  - unknown → -1 (ignored in training)  
+- Normalize 165 transaction features  
+- Create masks for labeled nodes  
+
+---
+
+### 2. Graph Construction
+- Nodes=transactions  
+- Edges=transaction flow  
+- Built using PyTorch Geometric Data object  
+
+Key components:
+- x → node features  
+- edge_index → graph connectivity  
+- y → labels  
+- train/test masks  
+
+---
+
+### 3. Model
+- Graph Neural Network (GNN)  
+- Learns node representations using neighborhood aggregation  
+- Captures:
+  - Local features (transaction properties)  
+  - Global structure (network connectivity)  
+
+---
+
+### 4. Experiments
+- Full feature model (165 features)
+- Implemented GCN
+- Implemented GraphSage
+- Implemented GAT 
+
+---
+
+## Results
+
+The model demonstrates:
+
+- Effective detection of illicit transactions  
+- Improved performance when using graph structure vs only local features  
+- Ability to capture hidden relationships in transaction networks  
+
+### Observations
+
+- GNN outperforms traditional ML methods  
+- Graph structure significantly improves classification  
+- Class imbalance affects performance  
+- Connectivity patterns are crucial for fraud detection  
+
+---
+
+## Visualizations Included
+
+- Class distribution (pie chart)  
+- Feature correlation heatmap  
+- Graph degree distribution  
+
+---
+
+## Key Insights
+
+- Fraud detection is inherently a graph problem  
+- Transactions are interdependent  
+- Structural information boosts predictive performance  
+
+---
+
+## Notes
+
+- Dataset is highly imbalanced  
+- Unknown labels are excluded during training  
+- Full graph training may be memory intensive  
+
+---
+
+## Future Improvements
+
+- Incorporate temporal dynamics  
+- Address class imbalance (weighted loss / resampling)  
+- Hyperparameter tuning  
+
