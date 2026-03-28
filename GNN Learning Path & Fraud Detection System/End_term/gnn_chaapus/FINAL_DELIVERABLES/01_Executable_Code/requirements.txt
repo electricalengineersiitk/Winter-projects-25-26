@@ -1,0 +1,13 @@
+numpy
+pandas
+scipy
+scikit-learn
+matplotlib
+seaborn
+tqdm
+pyyaml
+nbformat
+jupyter
+xgboost
+torch>=2.8.0
+torch-geometric>=2.7.0
