@@ -1,0 +1,339 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": []
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**SUBMISSION INSTRUCTIONS**\n",
+        "\n",
+        "First make a copy of this colab file and then solve the assignment and upload your final notebook on github.\n",
+        "\n",
+        "**To write an answer to any question, First Add a TEXT block below the question and type it in only one single block**\n",
+        "\n",
+        "Before uploading your downloaded notebook, RENAME the file as rollno_name.ipynb\n",
+        "\n",
+        "Submission Deadline : 19/12/2025 Friday EOD i.e before 11:59 PM\n",
+        "\n",
+        "The deadline is strict and will not be extended, Late submissions are not allowed\n",
+        "\n",
+        "Note that you have to upload your solution on the github page of the project Vision Transformer and **under Assignment 3**\n",
+        "\n",
+        "And remember to keep title of your pull request to be ViT_name_rollno_assgn3\n",
+        "\n",
+        "Github Submission repo -\n",
+        "https://github.com/electricalengineersiitk/Winter-projects-25-26/tree/main/Vision%20transformer/Assignment%203"
+      ],
+      "metadata": {
+        "id": "XmTMSeaTLwVp"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**THEORETICAL ASSIGNMENT**\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "-TjKxTBEz8i7"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "This assignment consists of theoretical questions. Objective answers will not be accepted. You need to write detailed answers (200-300 words) for the questions that require more in-depth explanations (you should be able to identify these after reading the question and finding about them). Questions that need less explanation can be answered in 20-100 words. Please ensure the answers are well-written and thorough."
+      ],
+      "metadata": {
+        "id": "AnVa1_8AKqtv"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "1. Assume that the inputs **X**\n",
+        " to some scalar function **f**\n",
+        " are **n x m**\n",
+        " matrices. What is the dimensionality of the gradient of **f**\n",
+        " with respect to **X**?\n",
+        "**Give reasons to justify your answer.**\n",
+        "\n",
+        "\n"
+      ],
+      "metadata": {
+        "id": "ERhYz9qV_YXI"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "X is an n × m matrix, which means it has n × m separate numbers in it. The function f takes all these numbers as input but gives only one output value.\n",
+        "\n",
+        "The gradient tells us how this one output changes when we slightly change each number in X. Since every number in X can affect the output, we need one gradient value for each entry of X.\n",
+        "\n",
+        "Because of this, the gradient has the same size as X itself, that is n × m."
+      ],
+      "metadata": {
+        "id": "nfZmJcKbB7DR"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "2. Define the evaluation metrics Accuracy, Precision, Recall, and F1 score.\n",
+        "\n",
+        "   Consider the following diagram:\n",
+        "   Find the values of Accuracy, Precision, Recall, and F1 score.\n",
+        "   |                | Actual: Cancer | Actual: No Cancer |\n",
+        "   |----------------|---------------|------------------|\n",
+        "   | Predicted: Cancer | 80 | 80 |\n",
+        "   | Predicted: No Cancer | 20 | 820 |\n",
+        "    \n",
+        "   \n",
+        "   Find the values of Accuracy, Precision, Recall, and F1 score using the above data.\n"
+      ],
+      "metadata": {
+        "id": "9vnyYHlq2g4B"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "From the given table,\n",
+        "the model correctly predicts cancer in 80 cases and correctly predicts no cancer in 820 cases, while it wrongly predicts cancer in 80 cases and misses cancer in 20 cases, making a total of 1000 cases.\n",
+        "Accuracy = (tp+tn)/(tp+tn+fp+fn)\n",
+        "\n",
+        "Accuracy -measures how many predictions are correct overall, which here is (80 +820) out of 1000, giving an accuracy of 90%.\n",
+        "\n",
+        "Precision - how often the model is correct when it predicts the positive outcome;precision = (tp/(tp + fp))\n",
+        "\n",
+        "Here the positive outcome is cancer so out of 160 cancer predictions, only80 are actually cancer, so the precision is 50%.\n",
+        "\n",
+        "Recall -measures how many actual psotives cases the model successfully detects;\n",
+        "Recall = (tp/ (tp+fn))\n",
+        "out of 100 real cancer cases, it correctly identifies 80, giving a recall of 80%.\n",
+        "\n",
+        "The F1 score combines precision and recall into a single value,\n",
+        "\n",
+        "F1 = (2×precision×recall)/(precision+recall)\n",
+        "and using these numbers it comes out to approximately 62%."
+      ],
+      "metadata": {
+        "id": "JhrFhZlVCtAd"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "3. What is a confusion matrix ?"
+      ],
+      "metadata": {
+        "id": "h1dJMD0vJKZg"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "A confusion matrix is a table that compares a model’s predicted results with the actual results. It shows how many predictions were correct and how many were wrong, helping us understand where the model is making mistakes and to calculate metrics like accuracy, precision, and recall."
+      ],
+      "metadata": {
+        "id": "6uHCNqCSEyu8"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "4. What is overfitting and underfitting ?"
+      ],
+      "metadata": {
+        "id": "aOqF8Dzw0DdZ"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Overfitting happens when a model learns the training data too well, including noise and random details. It performs very well on training data but poorly on new, unseen data because it fails to generalize.\n",
+        "\n",
+        "Underfitting happens when a model is too simple and does not learn the patterns in the data properly. As a result, it performs poorly on both training data and unseen data."
+      ],
+      "metadata": {
+        "id": "OhLV-OBiFASF"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "5. Explain vanishing and exploding gradients, give reasons why they occur and how they can be prevented.\n"
+      ],
+      "metadata": {
+        "id": "n4KfKc0z0ulm"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Vanishing gradients occur when gradients become very small during backpropagation, so earlier layers learn very slowly or stop learning. This usually happens in deep networks due to repeated multiplication of small values and the use of activations like sigmoid or tanh.\n",
+        "\n",
+        "Exploding gradients occur when gradients become very large, causing unstable training and huge weight updates. This happens due to large weights or deep networks where gradients grow as they propagate backward.\n",
+        "\n",
+        "These issues can be reduced by using proper weight initialization, ReLU-type activations, gradient clipping (for exploding gradients), normalization techniques, and architectures like residual networks or LSTMs."
+      ],
+      "metadata": {
+        "id": "SFBx-EsJFViE"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "6. What is regularization ? Explain L1 and L2 regularization"
+      ],
+      "metadata": {
+        "id": "6yaOipvU1JoD"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Regularization is a technique used to prevent overfitting in machine learning models. It works by adding a penalty to the loss function so that the model is discouraged from learning overly complex or extreme parameter values, helping it generalize better to new data.\n",
+        "\n",
+        "L1 regularization adds the sum of the absolute values of the model’s weights as a penalty. This pushes many weights to become exactly zero, which effectively performs feature selection and makes the model simpler and more interpretable.\n",
+        "\n",
+        "L2 regularization adds the sum of the squares of the weights as a penalty. Instead of making weights zero, it encourages them to be small and evenly distributed, leading to smoother and more stable models."
+      ],
+      "metadata": {
+        "id": "EVvWkBgnFgpf"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "7. What is Dropout Layer and To which part of a neural network is dropout generally applied? how does it prevent overfitting"
+      ],
+      "metadata": {
+        "id": "NjeRGpCE7QJ_"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "A dropout layer is a regularization technique where, during training, some neurons are randomly turned off (set to zero) in each forward pass. Dropout is generally applied to the hidden layers of a neural network, especially in fully connected layers, and sometimes less aggressively in convolutional layers.\n",
+        "\n",
+        "By randomly removing neurons, the network cannot rely too much on any single neuron and is forced to learn more robust and general patterns. This reduces co-adaptation between neurons and acts like training many smaller networks at once, which helps prevent overfitting."
+      ],
+      "metadata": {
+        "id": "JVy5KF2QFuSL"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "8. A hidden layer of a neural network has the following activations:\n",
+        "\n",
+        "   \\[\n",
+        "   a = [2.0, 5.0, 7.12, 4.5, 6.0]\n",
+        "   \\]\n",
+        "\n",
+        "   Dropout is applied **during training** with dropout probability \\(p = 0.5\\).\n",
+        "\n",
+        "   A randomly generated dropout mask is:\n",
+        "\n",
+        "   \\[\n",
+        "   m = [1, 0, 0, 1, 1]\n",
+        "   \\]\n",
+        "\n",
+        "   Here,  \n",
+        "   - `1` → neuron is **kept**  \n",
+        "   - `0` → neuron is **dropped**\n",
+        "\n",
+        "   ---\n",
+        "\n",
+        "   **Question:**  \n",
+        "   What will be the output activations of this layer **after applying dropout**?\n",
+        "   *(Show the final activation vector)*\n"
+      ],
+      "metadata": {
+        "id": "jLZFLyv4-A67"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "During training, dropout sets the dropped neurons to zero and scales the remaining active neurons to keep the overall output balanced. Here the dropout probability is 0.5, so the kept neurons are multiplied by 2.\n",
+        "\n",
+        "The original activations are\n",
+        "[2.0, 5.0, 7.12, 4.5, 6.0]\n",
+        "\n",
+        "The dropout mask is\n",
+        "[1, 0, 0, 1, 1]\n",
+        "\n",
+        "After applying the mask, the dropped neurons become zero:\n",
+        "[2.0, 0, 0, 4.5, 6.0]\n",
+        "\n",
+        "Now scaling the kept neurons by 2 gives the final output:\n",
+        "[4.0, 0, 0, 9.0, 12.0]"
+      ],
+      "metadata": {
+        "id": "e6hId2oKGAOf"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "9. Explain the difference between Gradient Descent, Stochastic Gradient Descent, Mini-Batch Gradient Descent"
+      ],
+      "metadata": {
+        "id": "La3K0HmUGj8t"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Gradient Descent uses the entire dataset to update the weights, so it is stable but slow.\n",
+        "\n",
+        "Stochastic Gradient Descent updates the weights using one data point at a time, making it fast but noisy.\n",
+        "\n",
+        "Mini-Batch Gradient Descent updates the weights using small batches of data, giving a good balance between speed and stability."
+      ],
+      "metadata": {
+        "id": "inC_J2jxGUhv"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "10. What are optimizers ? Explain Adam, RMS prop and Momentum in detail"
+      ],
+      "metadata": {
+        "id": "FngV9WtV7JxI"
+      }
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "\n",
+        "Optimizers are methods used to update a neural network’s weights in order to reduce the loss during training.\n",
+        "\n",
+        "Adam combines Momentum and RMSprop by using past gradients and their squared values, allowing fast and efficient training with adaptive learning rates.\n",
+        "\n",
+        "RMSprop adjusts the learning rate for each weight based on recent gradients, preventing very large updates and improving stability\n",
+        "\n",
+        "\n",
+        "Momentum speeds up learning by combining the current gradient with past updates, helping the model move faster in the right direction and reducing oscillations."
+      ],
+      "metadata": {
+        "id": "NtMTAdiHGkql"
+      }
+    }
+  ]
+}
