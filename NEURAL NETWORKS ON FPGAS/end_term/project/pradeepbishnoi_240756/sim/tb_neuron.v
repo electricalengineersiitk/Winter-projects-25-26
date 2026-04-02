@@ -31,6 +31,10 @@ module tb_neuron();
 
     // Test Stimulus
     initial begin
+        // storing the results for gtkwave generation in iverilog
+        $dumpfile("neuron_results.vcd"); 
+        $dumpvars(0, tb_neuron);       
+        
         // Input intialisation
         clk = 0;
         rst_n = 0;
@@ -84,8 +88,8 @@ module tb_neuron();
         $display("Neuron Output (Hex): %h", out);
         $display("Neuron Output (Dec): %f", $signed(out) / 256.0);
         $display("--------------------------------------");
-        $dumpfile("neuron_results.vcd"); // storing the results for gtkwave generation in iverilog
-        $dumpvars(0, tb_neuron);
+
         $finish;
     end
 endmodule
+
