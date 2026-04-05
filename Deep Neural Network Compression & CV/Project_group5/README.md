@@ -12,7 +12,8 @@ The pipeline compresses the model through **Pruning → Quantization → Huffman
 pip install torch torchvision scikit-learn numpy
 ```
 
-### 2. (optional) Place your trained weights (Already there if you don't want to retrain the model)
+### 2. (optional) Place your trained weights 
+(Already there if you don't want to retrain the model)
 Copy your trained weights file into the `compressed_models/` folder and make sure `config.py` points to it:
 ```python
 # config.py
