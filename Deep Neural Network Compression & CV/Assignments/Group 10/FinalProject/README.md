@@ -2,11 +2,11 @@
 
 ## Overview
 
-This repository implements a deep learning pipeline for model compression** on the MNIST dataset using:
+This repository implements a deep learning pipeline for model compression on the MNIST dataset using:
 
-- **Weight Pruning (removing small-magnitude weights)
-- **Weight Quantization (K-means clustering of weights)
-- **Compressed Storage (CSR sparse format)
+- Weight Pruning (removing small-magnitude weights)
+- Weight Quantization (K-means clustering of weights)
+- Compressed Storage (CSR sparse format)
 
 The objective is to reduce model size and computation while maintaining good accuracy.
 
@@ -16,14 +16,14 @@ The objective is to reduce model size and computation while maintaining good acc
 - Trains a CNN model on MNIST  
 - Applies global pruning to introduce sparsity  
 - Applies quantization to reduce precision  
-- Saves the model in a **compressed sparse format**  
+- Saves the model in a compressed sparse format  
 - Allows loading the compressed model back  
 
 
 ## Project Structure
 
-├── main.py # Entry point (runs full pipeline)
-├── config.py # Hyperparameters / settings
+├── main.py 
+├── config.py 
 
 ├── compression/
 │ ├── init.py
@@ -64,7 +64,7 @@ You can run this project easily on Google Colab by uploading the project ZIP fil
 2. Upload your project ZIP file:
 
 from google.colab import files
-uploaded = files.upload()  # Upload project_final.zip
+uploaded = files.upload() 
 
 !unzip project_final.zip
 
@@ -96,9 +96,9 @@ Reloaded Model Accuracy: 98.25%
 
 # Model Size Comparison
 
-Model Type	        File Size
+Model Type	            File Size
 Original (.pth)	        1.6701 MB
-Compressed (.npz)	1.1453 MB
+Compressed (.npz)	      1.1453 MB
 
 # Compression Achieved: 1.46× reduction
 
