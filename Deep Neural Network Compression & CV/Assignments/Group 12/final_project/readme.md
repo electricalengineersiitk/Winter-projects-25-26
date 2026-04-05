@@ -1,5 +1,5 @@
 ```markdown
-# 🍎 Fruits-360 Neural Network Compression Pipeline
+Fruits-360 Neural Network Compression Pipeline
 
 A three-stage model compression pipeline — **L1 Pruning → K-Means Quantization → Huffman Coding** — applied to a custom CNN trained on the Fruits-360 dataset (131 classes, 100×100 RGB).  
 
@@ -7,7 +7,7 @@ Achieves **~9× storage compression** with **~3.9% Top-1 accuracy drop**. :conte
 
 ---
 
-## 📁 Repository Structure
+Repository Structure
 
 ```
 
