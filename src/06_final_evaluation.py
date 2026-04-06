@@ -96,12 +96,27 @@ if __name__ == "__main__":
     
     comparisons = []
 
-    # 1. Classical Models (LDA, SVM)
-    for name, clf in [("LDA", LinearDiscriminantAnalysis()), ("SVM", SVC(kernel='rbf', class_weight='balanced'))]:
+    # 1. Classical Models (LDA, SVM, Xdawn)
+    from mne.preprocessing import Xdawn
+    # Xdawn + LDA is a classic P300 speller 'strong baseline'
+    xdawn_lda = [("LDA", LinearDiscriminantAnalysis()), 
+                 ("SVM", SVC(kernel='rbf', class_weight='balanced')),
+                 ("Xdawn+LDA", LinearDiscriminantAnalysis())]
+
+    for name, clf in xdawn_lda:
         print(f"Running Cross-Validation for {name}...")
         fold_metrics = []
         for train_idx, test_idx in skf.split(X, y):
-            X_tr, X_te = X[train_idx].reshape(len(train_idx), -1), X[test_idx].reshape(len(test_idx), -1)
+            if name == "Xdawn+LDA":
+                # Xdawn expects raw epochs structure (n_epochs, n_channels, n_times)
+                xd = Xdawn(n_components=3, reg='auto', random_state=SEED)
+                xd.fit(X[train_idx], y[train_idx])
+                X_tr = xd.transform(X[train_idx]).reshape(len(train_idx), -1)
+                X_te = xd.transform(X[test_idx]).reshape(len(test_idx), -1)
+            else:
+                X_tr = X[train_idx].reshape(len(train_idx), -1)
+                X_te = X[test_idx].reshape(len(test_idx), -1)
+
             clf.fit(X_tr, y[train_idx])
             p = clf.predict(X_te)
             fold_metrics.append([accuracy_score(y[test_idx], p), precision_score(y[test_idx], p), recall_score(y[test_idx], p), f1_score(y[test_idx], p)])
