@@ -112,6 +112,9 @@ if __name__ == "__main__":
     # 2. Deep Learning (EEGNet)
     print("Running Cross-Validation for EEGNet (Deep Learning)...")
     dl_metrics = []
+    all_y_test_dl = []
+    all_p_dl = []
+    
     for f_idx, (train_idx, test_idx) in enumerate(skf.split(X, y)):
         print(f"  - Fold {f_idx+1}/5")
         mu, sd = np.mean(X[train_idx]), np.std(X[train_idx])
@@ -132,11 +135,13 @@ if __name__ == "__main__":
         with torch.no_grad():
             p_dl = torch.argmax(net(X_te_dl), dim=1).numpy()
         dl_metrics.append([accuracy_score(y[test_idx], p_dl), precision_score(y[test_idx], p_dl), recall_score(y[test_idx], p_dl), f1_score(y[test_idx], p_dl)])
+        all_y_test_dl.extend(y[test_idx])
+        all_p_dl.extend(p_dl)
 
     avg_dl = np.mean(dl_metrics, axis=0)
     comparisons.append(["EEGNet", avg_dl[0], avg_dl[1], avg_dl[2], avg_dl[3], get_itr(36, avg_dl[0])])
 
-    # --- FINAL REPORT ---
+    # --- FINAL REPORT & CONFUSION MATRIX ---
     df = pd.DataFrame(comparisons, columns=['Model', 'Acc', 'Prec', 'Recall', 'F1', 'ITR'])
     print("\n" + "="*55)
     print("FINAL ACADEMIC COMPARISON (AVERAGED OVER 5 FOLDS)")
@@ -144,3 +149,18 @@ if __name__ == "__main__":
     print(df.round(3).to_string(index=False))
     print("="*55)
     print(f"\nArtifact Rejection (ICA) and 50Hz Notch applied. Data re-referenced to average.")
+
+    # Generate and Save Confusion Matrix Heatmap (Rubric Requirement)
+    cm = confusion_matrix(all_y_test_dl, all_p_dl)
+    print("\nEEGNet Aggregated Confusion Matrix:")
+    print(cm)
+    
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Non-Target', 'Target'], yticklabels=['Non-Target', 'Target'])
+    plt.title('EEGNet Confusion Matrix (Aggregated 5-Folds)')
+    plt.ylabel('True Label')
+    plt.xlabel('Predicted Label')
+    plt.tight_layout()
+    plt.savefig('results/confusion_matrix.png', dpi=200)
+    plt.close()
+    print("Saved Confusion Matrix Heatmap to results/confusion_matrix.png")

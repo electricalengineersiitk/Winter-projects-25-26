@@ -25,7 +25,8 @@ This repository contains a full-stack EEG signal processing and classification p
 - `src/06_final_evaluation.py`: Total system audit and metric generation.
 - `src/07_erp_plot.py`: Visualization of the P300 ERP waveform.
 - `src/08_ensemble_averaging.py`: Simulation of ensemble score averaging across repetitions.
-- `results/`: Contains Confusion Matrices and the **ERP Waveform Plot**.
+- `results/`: Contains **Confusion Matrix Heatmaps** (`confusion_matrix.png`) and the **ERP Waveform Plot**.
+
 
 ## 🛠 Setup & Run
 1. Create environment: `python -m venv eeg_env`

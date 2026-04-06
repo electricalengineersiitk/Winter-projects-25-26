@@ -21,6 +21,7 @@
 - [x] **ICA Artifact Rejection:** Applied ICA to remove eye blinks (~2 components excluded).
 - [x] **Evaluation Upgrade:** Moved EEGNet to 5-Fold Stratified Cross-Validation for scientific rigor.
 - [x] **Visuals:** Generated `results/erp_waveform.png` to visually confirm P300 component detection.
+- [x] **Confusion Matrix:** Aggregated EEGNet predictions across 5-folds to plot a Seaborn heatmap (`results/confusion_matrix.png`), fully matching Stage 5 requirements.
 - [x] **ITR Validation:** Confirmed Information Transfer Rate (ITR) calculations across all models.
 - [x] **Ensemble Simulation:** Demonstrated Accuracy boost via score averaging in `08_ensemble_averaging.py`.
 
