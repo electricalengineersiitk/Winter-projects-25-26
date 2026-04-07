@@ -4,7 +4,7 @@ import warnings
 from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import GroupKFold
 
 # Local Imports (Zero-Leakage & Modular)
 from preprocess import get_clean_data, apply_bad_channel_interpolation, apply_spatial_ica
@@ -16,15 +16,18 @@ mne.set_log_level('WARNING')
 def run_ensemble_benchmark():
     """
     Final Ensemble Benchmark: 
-    Uses 5-fold Stratified CV with full fold-specific preprocessing 
-    (Bad Channels + ICA) to compute a scientifically valid Character ITR.
+    Uses 5-fold GroupKFold to maintain block contiguity (Bug #1 fix).
+    Full fold-specific preprocessing (Bad Channels + ICA).
     """
     ds_name = "BNCI2014_009"
     subj = 1
     print(f"--- [ Ensemble ] {ds_name} Subject {subj} ---")
     
     epochs, X, y = get_clean_data(ds_name, subj)
-    skf = StratifiedKFold(n_splits=5, shuffle=False)
+    
+    # Bug #1 Fix: Group by Character Cycle (12 flashes)
+    groups = np.arange(len(epochs)) // 12
+    skf = GroupKFold(n_splits=5)
     
     # Model: Standard RBF-SVM Pipeline
     clf = Pipeline([
@@ -35,7 +38,7 @@ def run_ensemble_benchmark():
     subject_probs = []
     subject_y = []
 
-    for fold, (train_idx, test_idx) in enumerate(skf.split(X, y)):
+    for fold, (train_idx, test_idx) in enumerate(skf.split(X, y, groups=groups)):
         print(f"  Fold {fold+1}/5...")
         # Data Slicing
         e_tr, e_te = epochs[train_idx].copy(), epochs[test_idx].copy()
@@ -59,12 +62,13 @@ def run_ensemble_benchmark():
     y_test = np.array(subject_y)
     
     char_acc = get_character_prediction(probs, y_test, flash_per_char=12)
-    itr_n36 = get_symbol_itr(36, char_acc, dur=12.0)
+    # Bug #2 Fix: True duration 2.1s
+    itr_n36 = get_symbol_itr(36, char_acc, dur=2.1)
 
     print("\n--- FINAL ENSEMBLE REPORT ---")
     print(f"Character Accuracy (N=36): {char_acc*100:.1f}%")
     print(f"Communication Rate:        {itr_n36:.2f} bits/min")
-    print(f"Protocol:                  5-Fold CV, per-fold ICA + BadChan")
+    print(f"Protocol:                  5-Fold GroupKFold (Zero-Leakage)")
     print("----------------------------\n")
 
 if __name__ == "__main__":

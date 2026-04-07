@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import GroupKFold
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, confusion_matrix
 from mne.preprocessing import Xdawn
 
@@ -33,8 +33,11 @@ def get_character_prediction(probs, y_test, flash_per_char=12):
             
     return correct_chars / n_chars if n_chars > 0 else 0
 
-def get_symbol_itr(n, acc, dur=12.0):
-    """Physically valid ITR (N=36, T=1character_time) in bits/min."""
+def get_symbol_itr(n, acc, dur=2.1):
+    """
+    Physically valid ITR (N=36, T=Character Time) in bits/min.
+    SOA = 0.175s, 12 flashes/char = 2.1s duration. (Correction: Bug #2)
+    """
     if acc <= 1/n: return 0
     if acc >= 0.999: acc = 0.999
     bits = np.log2(n) + acc*np.log2(acc) + (1-acc)*np.log2((1-acc)/(n-1))
@@ -49,7 +52,9 @@ def run_benchmarking():
         for subj in range(1, 2): # Subject 1 as benchmark
             print(f"\n--- [ {ds_name} ] Subject {subj} ---")
             epochs, X, y = get_clean_data(ds_name, subj)
-            skf = StratifiedKFold(n_splits=5, shuffle=False)
+            # GroupKFold (Bug #1 Fix): Groups flashes by character cycle (12 flashes)
+            groups = np.arange(len(epochs)) // 12
+            skf = GroupKFold(n_splits=5)
             
             # --- Classical Models Comparison ---
             models_list = [
@@ -64,7 +69,7 @@ def run_benchmarking():
                 subject_probs = []
                 subject_y = []
 
-                for train_idx, test_idx in skf.split(X, y):
+                for train_idx, test_idx in skf.split(X, y, groups=groups):
                     # Data Slicing
                     e_tr, e_te = epochs[train_idx].copy(), epochs[test_idx].copy()
                     y_tr, y_te = y[train_idx], y[test_idx]
@@ -75,15 +80,10 @@ def run_benchmarking():
                     
                     # 2. Model Specific Features
                     if "Xdawn" in name:
-                        try:
-                            # Scientific Fix: correct_overlap=False and reduced components for stability
-                            xd = Xdawn(n_components=2, correct_overlap=False).fit(e_tr, y_tr)
-                            X_tr = xd.transform(e_tr).reshape(len(e_tr), -1)
-                            X_te = xd.transform(e_te).reshape(len(e_te), -1)
-                        except Exception as e:
-                            print(f"      [Warning] Xdawn failed ({e}), falling back to waveform features.")
-                            X_tr = e_tr.get_data().reshape(len(e_tr), -1)
-                            X_te = e_te.get_data().reshape(len(e_te), -1)
+                        # Scientific Fix: consistent feature space per CV fold
+                        xd = Xdawn(n_components=2, correct_overlap=False, reg=0.1).fit(e_tr, y_tr)
+                        X_tr = xd.transform(e_tr).reshape(len(e_tr), -1)
+                        X_te = xd.transform(e_te).reshape(len(e_te), -1)
                     else:
                         X_tr = e_tr.get_data().reshape(len(e_tr), -1)
                         X_te = e_te.get_data().reshape(len(e_te), -1)
@@ -107,7 +107,8 @@ def run_benchmarking():
                 
                 # 4. Correct ITR (N=36) via Character-Level Aggregation
                 char_acc = get_character_prediction(np.array(subject_probs), np.array(subject_y))
-                itr = get_symbol_itr(36, char_acc, dur=12.0)
+                # Bug #2 Fix: ITR using true protocol duration
+                itr = get_symbol_itr(36, char_acc, dur=2.1)
                 
                 # 5. Confusion Matrix (Requirement: Visual CM)
                 y_pred_all = (np.array(subject_probs) > 0.5).astype(int)
