@@ -73,3 +73,7 @@ vvp sim/tb_layer.vvp
 | 4      | 0              | 0                 | **PASS** |
 | 5      | 2              | 2                 | **PASS** |
 
+
+
+## Project Portfolio
+This project is maintained in a standalone repository for version control and documentation: [FPGA_NeuralNetwork](https://github.com/bratadeepsarkar123/FPGA_NeuralNetwork)
