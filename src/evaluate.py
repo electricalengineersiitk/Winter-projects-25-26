@@ -1,136 +1,132 @@
 import os
-import warnings
 import numpy as np
 import pandas as pd
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import DataLoader, TensorDataset
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import StratifiedKFold
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.svm import SVC
-from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
+from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, confusion_matrix
+from mne.preprocessing import Xdawn
 
-# Local Imports (Aligned with submission structure)
-from preprocess import get_clean_data, apply_spatial_ica
-from models import EEGNet
+# Local Imports (Zero-Leakage & Modular)
+from preprocess import get_clean_data, apply_bad_channel_interpolation, apply_spatial_ica
+from models import EEGNet, get_lda_pipeline, get_svm_pipeline
 
-# Global Config
-warnings.filterwarnings('ignore')
-SEED = 42
-torch.manual_seed(SEED)
-np.random.seed(SEED)
-os.makedirs('results', exist_ok=True)
+def get_character_prediction(probs, y_test, flash_per_char=12):
+    """
+    Groups flash predictions into symbol-level decisions (N=36).
+    Standard P300 Ensemble Logic: Max prob in Cycle = Predicted Target.
+    """
+    n_chars = len(probs) // flash_per_char
+    correct_chars = 0
+    for i in range(n_chars):
+        # Extract 12 flashes for this character
+        c_probs = probs[i*flash_per_char : (i+1)*flash_per_char]
+        c_labels = y_test[i*flash_per_char : (i+1)*flash_per_char]
+        
+        # Predicted: Flash index with max target probability
+        pred_idx = np.argmax(c_probs)
+        # Truth: Flash index with label 1 (Target)
+        true_idx = np.where(c_labels == 1)[0]
+        
+        if len(true_idx) > 0 and pred_idx == true_idx[0]:
+            correct_chars += 1
+            
+    return correct_chars / n_chars if n_chars > 0 else 0
 
-# Hardware Audit
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print(f"--- Hardware Audit: Running on {str(device).upper()} ---")
-if device.type == 'cuda':
-    print(f"--- GPU Name: {torch.cuda.get_device_name(0)} ---")
-else:
-    print("--- WARNING: Running on CPU. Training will be slow. ---")
+def get_symbol_itr(n, acc, dur=12.0):
+    """Physically valid ITR (N=36, T=1character_time) in bits/min."""
+    if acc <= 1/n: return 0
+    if acc >= 0.999: acc = 0.999
+    bits = np.log2(n) + acc*np.log2(acc) + (1-acc)*np.log2((1-acc)/(n-1))
+    return bits * (60.0 / dur)
 
-
-if __name__ == "__main__":
-    datasets = ['BNCI2014_009', 'EPFLP300']
+def run_benchmarking():
+    datasets = ["BNCI2014_009"] # , "EPFLP300"]
+    os.makedirs('results', exist_ok=True)
     all_summary = []
 
-    print("--- Starting Multi-Dataset Comparative Benchmark ---")
-    
     for ds_name in datasets:
-        print(f"\n>>> AUDITING DATASET: {ds_name}...")
-        
-        # BNCI2014_009 has 10 subjects, EPFLP300 has subjects [1,2,3,4,6,7,8,9]
-        if ds_name == 'BNCI2014_009':
-            subjects = [1, 2, 3] # Adjusted for verification
-        else:
-            subjects = [1, 2] # EPFLP300
+        for subj in range(1, 2): # Subject 1 as benchmark
+            print(f"\n--- [ {ds_name} ] Subject {subj} ---")
+            epochs, X, y = get_clean_data(ds_name, subj)
+            skf = StratifiedKFold(n_splits=5, shuffle=False)
             
-        for subj in subjects:
-            print(f"  - Evaluate Subject {subj}...")
-            try:
-                epochs, X, y = get_clean_data(dataset_name=ds_name, subj=subj)
-            except Exception as e:
-                print(f"    ! Error loading {ds_name} sub {subj}: {e}")
-                continue
-
-            skf = StratifiedKFold(n_splits=3, shuffle=False)
-            
+            # --- Classical Models Comparison ---
             models_list = [
-                ("LDA", Pipeline([('scaler', StandardScaler()), ('lda', LinearDiscriminantAnalysis())])),
-                ("SVM", Pipeline([('scaler', StandardScaler()), ('svm', SVC(kernel='rbf', class_weight='balanced', probability=True))])),
-                ("EEGNet", "DL")
+                ("LDA", get_lda_pipeline()),
+                ("SVM", get_svm_pipeline()),
+                ("Xdawn+LDA", get_lda_pipeline()) # Xdawn features handled in CV
             ]
 
-            # To store fold metrics per model
-            fold_metrics = {name: [] for name, _ in models_list}
+            for name, clf in models_list:
+                print(f"  Training {name}...")
+                metrics = []
+                subject_probs = []
+                subject_y = []
 
-            # Bug #2 & Bug #4 Fix: Split without shuffling, apply ICA fold by fold
-            for train_idx, test_idx in skf.split(np.zeros(len(y)), y):
-                # ICA Spatial Audit inside CV Loop
-                epochs_train_cv = epochs[train_idx].copy()
-                epochs_test_cv = epochs[test_idx].copy()
-                epochs_train_cv, epochs_test_cv = apply_spatial_ica(epochs_train_cv, epochs_test_cv)
-                
-                # Transformed features
-                X_tr_ic = epochs_train_cv.get_data()
-                X_te_ic = epochs_test_cv.get_data()
-                
-                for name, clf in models_list:
-                    if name == "EEGNet":
-                        mu, sd = np.mean(X_tr_ic), np.std(X_tr_ic)
-                        X_tr = torch.Tensor((X_tr_ic - mu)/sd)[:, None, :, :]
-                        X_te = torch.Tensor((X_te_ic - mu)/sd)[:, None, :, :]
-                        
-                        loader = DataLoader(TensorDataset(X_tr, torch.LongTensor(y[train_idx])), batch_size=32, shuffle=True)
-                        net = EEGNet(n_chan=X_tr_ic.shape[1], n_time=X_tr.shape[-1]).to(device)
-                        opt = optim.Adam(net.parameters(), lr=0.001)
-                        
-                        # Adaptive Class Weighting
-                        n_pos = np.sum(y[train_idx])
-                        weight = len(y[train_idx]) / (2 * n_pos) if n_pos > 0 else 5.0
-                        crit = nn.CrossEntropyLoss(weight=torch.Tensor([1.0, weight]).to(device))
+                for train_idx, test_idx in skf.split(X, y):
+                    # Data Slicing
+                    e_tr, e_te = epochs[train_idx].copy(), epochs[test_idx].copy()
+                    y_tr, y_te = y[train_idx], y[test_idx]
 
-                        for _ in range(30):
-                            net.train()
-                            for b_x, b_y in loader:
-                                b_x, b_y = b_x.to(device), b_y.to(device)
-                                opt.zero_grad(); crit(net(b_x), b_y).backward(); opt.step()
-                        
-                        net.eval()
-                        with torch.no_grad():
-                            p = torch.argmax(net(X_te.to(device)), dim=1).cpu().numpy()
-                    else:
-                        X_tr = X_tr_ic.reshape(len(train_idx), -1)
-                        X_te = X_te_ic.reshape(len(test_idx), -1)
-                        clf.fit(X_tr, y[train_idx])
-                        p = clf.predict(X_te)
+                    # 1. Zero-Leakage Preprocessing (Per-fold)
+                    e_tr, e_te = apply_bad_channel_interpolation(e_tr, e_te)
+                    e_tr, e_te = apply_spatial_ica(e_tr, e_te)
                     
-                    fold_metrics[name].append([
-                        accuracy_score(y[test_idx], p),
-                        recall_score(y[test_idx], p),
-                        precision_score(y[test_idx], p),
-                        f1_score(y[test_idx], p)
+                    # 2. Model Specific Features
+                    if "Xdawn" in name:
+                        try:
+                            # Scientific Fix: correct_overlap=False and reduced components for stability
+                            xd = Xdawn(n_components=2, correct_overlap=False).fit(e_tr, y_tr)
+                            X_tr = xd.transform(e_tr).reshape(len(e_tr), -1)
+                            X_te = xd.transform(e_te).reshape(len(e_te), -1)
+                        except Exception as e:
+                            print(f"      [Warning] Xdawn failed ({e}), falling back to waveform features.")
+                            X_tr = e_tr.get_data().reshape(len(e_tr), -1)
+                            X_te = e_te.get_data().reshape(len(e_te), -1)
+                    else:
+                        X_tr = e_tr.get_data().reshape(len(e_tr), -1)
+                        X_te = e_te.get_data().reshape(len(e_te), -1)
+
+                    # 3. Classify
+                    clf.fit(X_tr, y_tr)
+                    y_pred = clf.predict(X_te)
+                    # For character ensemble logic
+                    subject_probs.extend(clf.predict_proba(X_te)[:, 1])
+                    subject_y.extend(y_te)
+                    
+                    metrics.append([
+                        accuracy_score(y_te, y_pred),
+                        recall_score(y_te, y_pred),
+                        precision_score(y_te, y_pred, zero_division=0),
+                        f1_score(y_te, y_pred, zero_division=0)
                     ])
 
-            # Bug #9 Fix: Remove invalid single-trial ITR calculation
-            for name, _ in models_list:
-                avg_m = np.mean(fold_metrics[name], axis=0)
-                all_summary.append([ds_name, subj, name, avg_m[0], avg_m[1], avg_m[2], avg_m[3]])
-                print(f"    {name} -> F1: {avg_m[3]:.3f} | Acc: {avg_m[0]:.3f}")
+                # Aggregated Analysis
+                avg_m = np.mean(metrics, axis=0)
+                
+                # 4. Correct ITR (N=36) via Character-Level Aggregation
+                char_acc = get_character_prediction(np.array(subject_probs), np.array(subject_y))
+                itr = get_symbol_itr(36, char_acc, dur=12.0)
+                
+                # 5. Confusion Matrix (Requirement: Visual CM)
+                y_pred_all = (np.array(subject_probs) > 0.5).astype(int)
+                cm = confusion_matrix(subject_y, y_pred_all)
+                plt.figure(figsize=(5, 4))
+                sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
+                plt.title(f"CM: {name} ({ds_name})")
+                plt.xlabel("Predicted"); plt.ylabel("True")
+                plt.savefig(f"results/cm_{ds_name}_{name}.png")
+                plt.close()
 
-    # --- REPORTING ---
-    df = pd.DataFrame(all_summary, columns=['Dataset', 'Subject', 'Model', 'Acc', 'Recall', 'Prec', 'F1'])
-    df.to_csv('results/all_subject_results.csv', index=False)
-    
-    final_report = df.groupby(['Dataset', 'Model'])[['Acc', 'F1']].mean().round(3)
-    print("\n" + "="*50)
-    print("--- FINAL SUBMISSION BENCHMARK ---")
-    print("="*50)
-    print(final_report)
-    print("="*50)
-    print("\nFull breakdown saved to results/all_subject_results.csv")
+                print(f"    - F1: {avg_m[3]:.3f} | Char Acc: {char_acc*100:.1f}% | ITR: {itr:.2f} bpm")
+                all_summary.append([ds_name, subj, name, avg_m[0], avg_m[3], char_acc, itr])
+
+    # Final Report Save
+    if all_summary:
+        df = pd.DataFrame(all_summary, columns=['Dataset', 'Subject', 'Model', 'Acc', 'F1', 'Char_Acc', 'ITR_N36'])
+        df.to_csv('results/all_subject_results.csv', index=False)
+        print("\n[DONE] Benchmark Complete. Results and Confusion Matrices saved to results/ folder.")
+
+if __name__ == "__main__":
+    run_benchmarking()

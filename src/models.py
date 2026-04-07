@@ -1,5 +1,9 @@
 import torch
 import torch.nn as nn
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.svm import SVC
 
 class EEGNet(nn.Module):
     """Compact CNN for EEG classification (Lawhern et al., 2018)."""
@@ -24,3 +28,21 @@ class EEGNet(nn.Module):
 
     def forward(self, x):
         return self.fc(self.b2(self.b1(x)).view(x.size(0), -1))
+
+def get_lda_pipeline():
+    """Standard Baseline: Scaler + LDA."""
+    return Pipeline([
+        ('scaler', StandardScaler()),
+        ('lda', LinearDiscriminantAnalysis())
+    ])
+
+def get_svm_pipeline():
+    """Strong Classical Baseline: Scaler + RBF SVM."""
+    return Pipeline([
+        ('scaler', StandardScaler()),
+        ('svm', SVC(probability=True, kernel='rbf'))
+    ])
+
+# Note: Xdawn is usually implemented as a spatial filter fit on train epochs.
+# Since it takes Epochs as input (supervised), it's called manually in the CV loop 
+# in evaluate.py but uses the LDA pipeline for classification.
