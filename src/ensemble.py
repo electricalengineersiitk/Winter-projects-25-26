@@ -4,7 +4,7 @@ import warnings
 from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
-from sklearn.model_selection import GroupKFold
+from sklearn.model_selection import KFold
 
 # Local Imports (Zero-Leakage & Modular)
 from preprocess import get_clean_data, apply_bad_channel_interpolation, apply_spatial_ica
@@ -16,7 +16,7 @@ mne.set_log_level('WARNING')
 def run_ensemble_benchmark():
     """
     Final Ensemble Benchmark: 
-    Uses 5-fold GroupKFold to maintain block contiguity (Bug #1 fix).
+    Uses 5-fold KFold to maintain block contiguity (Bug #3 fix).
     Full fold-specific preprocessing (Bad Channels + ICA).
     """
     ds_name = "BNCI2014_009"
@@ -25,9 +25,8 @@ def run_ensemble_benchmark():
     
     epochs, X, y = get_clean_data(ds_name, subj)
     
-    # Bug #1 Fix: Group by Character Cycle (12 flashes)
-    groups = np.arange(len(epochs)) // 12
-    skf = GroupKFold(n_splits=5)
+    # Bug #3 Fix: KFold (shuffle=False) keeps chronological blocks intact automatically
+    skf = KFold(n_splits=5, shuffle=False)
     
     # Model: Standard RBF-SVM Pipeline
     clf = Pipeline([
@@ -38,7 +37,7 @@ def run_ensemble_benchmark():
     subject_probs = []
     subject_y = []
 
-    for fold, (train_idx, test_idx) in enumerate(skf.split(X, y, groups=groups)):
+    for fold, (train_idx, test_idx) in enumerate(skf.split(X, y)):
         print(f"  Fold {fold+1}/5...")
         # Data Slicing
         e_tr, e_te = epochs[train_idx].copy(), epochs[test_idx].copy()

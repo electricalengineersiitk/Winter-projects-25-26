@@ -4,6 +4,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.svm import SVC
+from skorch import NeuralNetClassifier
+import torch.optim as optim
 
 class EEGNet(nn.Module):
     """Compact CNN for EEG classification (Lawhern et al., 2018)."""
@@ -42,6 +44,25 @@ def get_svm_pipeline():
         ('scaler', StandardScaler()),
         ('svm', SVC(probability=True, kernel='rbf'))
     ])
+
+def get_eegnet_pipeline():
+    """Deep Learning Baseline (EEGNet) using skorch."""
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    weight = torch.tensor([1.0, 5.0], device=device)
+    
+    return NeuralNetClassifier(
+        EEGNet,
+        criterion=nn.CrossEntropyLoss,
+        criterion__weight=weight,
+        optimizer=optim.Adam,
+        lr=0.001,
+        max_epochs=50,
+        batch_size=32,
+        device=device,
+        iterator_train__shuffle=True,
+        train_split=None, # We handle CV manually
+        verbose=0
+    )
 
 # Note: Xdawn is usually implemented as a spatial filter fit on train epochs.
 # Since it takes Epochs as input (supervised), it's called manually in the CV loop 

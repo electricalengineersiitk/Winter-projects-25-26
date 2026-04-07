@@ -3,13 +3,13 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.model_selection import GroupKFold
+from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, confusion_matrix
 from mne.preprocessing import Xdawn
 
 # Local Imports (Zero-Leakage & Modular)
 from preprocess import get_clean_data, apply_bad_channel_interpolation, apply_spatial_ica
-from models import EEGNet, get_lda_pipeline, get_svm_pipeline
+from models import EEGNet, get_lda_pipeline, get_svm_pipeline, get_eegnet_pipeline
 
 def get_character_prediction(probs, y_test, flash_per_char=12):
     """
@@ -19,18 +19,27 @@ def get_character_prediction(probs, y_test, flash_per_char=12):
     n_chars = len(probs) // flash_per_char
     correct_chars = 0
     for i in range(n_chars):
-        # Extract 12 flashes for this character
         c_probs = probs[i*flash_per_char : (i+1)*flash_per_char]
         c_labels = y_test[i*flash_per_char : (i+1)*flash_per_char]
         
-        # Predicted: Flash index with max target probability
-        pred_idx = np.argmax(c_probs)
-        # Truth: Flash index with label 1 (Target)
-        true_idx = np.where(c_labels == 1)[0]
+        # P300 Speller grids flash 6 rows and 6 columns. 
+        # The first 6 flashes are usually one dimension (e.g. rows), the last 6 are the other (columns).
+        row_probs = c_probs[:6]
+        col_probs = c_probs[6:]
         
-        if len(true_idx) > 0 and pred_idx == true_idx[0]:
-            correct_chars += 1
-            
+        row_labels = c_labels[:6]
+        col_labels = c_labels[6:]
+        
+        pred_row = np.argmax(row_probs)
+        pred_col = np.argmax(col_probs)
+        
+        true_rows = np.where(row_labels == 1)[0]
+        true_cols = np.where(col_labels == 1)[0]
+        
+        if len(true_rows) > 0 and len(true_cols) > 0:
+            if pred_row == true_rows[0] and pred_col == true_cols[0]:
+                correct_chars += 1
+                
     return correct_chars / n_chars if n_chars > 0 else 0
 
 def get_symbol_itr(n, acc, dur=2.1):
@@ -52,15 +61,15 @@ def run_benchmarking():
         for subj in range(1, 2): # Subject 1 as benchmark
             print(f"\n--- [ {ds_name} ] Subject {subj} ---")
             epochs, X, y = get_clean_data(ds_name, subj)
-            # GroupKFold (Bug #1 Fix): Groups flashes by character cycle (12 flashes)
-            groups = np.arange(len(epochs)) // 12
-            skf = GroupKFold(n_splits=5)
+            # KFold (Bug #3 Fix): keeps the strict chronological blocks of 12 intact, no shuffling.
+            skf = KFold(n_splits=5, shuffle=False)
             
             # --- Classical Models Comparison ---
             models_list = [
                 ("LDA", get_lda_pipeline()),
                 ("SVM", get_svm_pipeline()),
-                ("Xdawn+LDA", get_lda_pipeline()) # Xdawn features handled in CV
+                ("Xdawn+LDA", get_lda_pipeline()), # Xdawn features handled in CV
+                ("EEGNet", get_eegnet_pipeline())
             ]
 
             for name, clf in models_list:
@@ -69,7 +78,7 @@ def run_benchmarking():
                 subject_probs = []
                 subject_y = []
 
-                for train_idx, test_idx in skf.split(X, y, groups=groups):
+                for train_idx, test_idx in skf.split(X, y):
                     # Data Slicing
                     e_tr, e_te = epochs[train_idx].copy(), epochs[test_idx].copy()
                     y_tr, y_te = y[train_idx], y[test_idx]
@@ -84,6 +93,16 @@ def run_benchmarking():
                         xd = Xdawn(n_components=2, correct_overlap=False, reg=0.1).fit(e_tr, y_tr)
                         X_tr = xd.transform(e_tr).reshape(len(e_tr), -1)
                         X_te = xd.transform(e_te).reshape(len(e_te), -1)
+                    elif "EEGNet" in name:
+                        # EEGNet requires (N, 1, C, T) shape
+                        X_tr_data = e_tr.get_data()
+                        X_te_data = e_te.get_data()
+                        mu = np.mean(X_tr_data)
+                        sd = np.std(X_tr_data)
+                        X_tr = ((X_tr_data - mu) / sd)[:, np.newaxis, :, :].astype(np.float32)
+                        X_te = ((X_te_data - mu) / sd)[:, np.newaxis, :, :].astype(np.float32)
+                        y_tr = y_tr.astype(np.int64)
+                        y_te = y_te.astype(np.int64)
                     else:
                         X_tr = e_tr.get_data().reshape(len(e_tr), -1)
                         X_te = e_te.get_data().reshape(len(e_te), -1)
