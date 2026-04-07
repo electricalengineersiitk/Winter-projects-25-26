@@ -8,11 +8,14 @@
 //
 module nn_top (
     input  wire        clk,
-    input  wire        rst_n,       // active-low reset
+    input  wire        btn_rst,     // active-high reset (physical button)
     input  wire        start,       // pulse to begin inference
     output reg  [1:0]  predicted_class,  // 0, 1, or 2
     output reg         done         // high for 1 cycle when result is ready
 );
+
+    // Internal active-low reset for sub-modules
+    wire rst_n = !btn_rst;
 
     // ══════════════════════════════════════════════════════════════════════
     // FSM States
@@ -38,7 +41,7 @@ module nn_top (
         test_inputs[1] = 16'h0000;
         test_inputs[2] = 16'h0000;
         test_inputs[3] = 16'h0000;
-        $readmemh("weights/test_data.mem", test_inputs, 0, 3);
+        $readmemh("test_data.mem", test_inputs, 0, 3);
     end
 
     // ══════════════════════════════════════════════════════════════════════
@@ -54,8 +57,8 @@ module nn_top (
     layer #(
         .NUM_NEURONS (8),
         .NUM_INPUTS  (4),
-        .WEIGHT_FILE ("weights/weights_hidden.mem"),
-        .BIAS_FILE   ("weights/biases_hidden.mem")
+        .WEIGHT_FILE ("weights_hidden.mem"),
+        .BIAS_FILE   ("biases_hidden.mem")
     ) hidden_layer (
         .clk         (clk),
         .rst_n       (rst_n),
@@ -88,8 +91,8 @@ module nn_top (
     reg [15:0] b_out_mem [0:2];   // 3 biases
 
     initial begin
-        $readmemh("weights/weights_output.mem", w_out_mem);
-        $readmemh("weights/biases_output.mem", b_out_mem);
+        $readmemh("weights_output.mem", w_out_mem);
+        $readmemh("biases_output.mem", b_out_mem);
     end
 
     reg         o_start;
@@ -121,8 +124,8 @@ module nn_top (
     // ══════════════════════════════════════════════════════════════════════
     // Main FSM
     // ══════════════════════════════════════════════════════════════════════
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
+    always @(posedge clk or posedge btn_rst) begin
+        if (btn_rst) begin
             state          <= S_IDLE;
             cycle_cnt      <= 4'd0;
             done           <= 1'b0;

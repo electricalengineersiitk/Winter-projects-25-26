@@ -3,14 +3,14 @@
 module tb_nn_top;
 
     reg        clk;
-    reg        rst_n;
+    reg        btn_rst;
     reg        start;
     wire [1:0] predicted_class;
     wire       done;
 
     nn_top uut (
         .clk             (clk),
-        .rst_n           (rst_n),
+        .btn_rst         (btn_rst),
         .start           (start),
         .predicted_class (predicted_class),
         .done            (done)
@@ -20,12 +20,12 @@ module tb_nn_top;
     always #5 clk = ~clk;
 
     initial begin
-        clk   = 0;
-        rst_n = 0;
-        start = 0;
+        clk     = 0;
+        btn_rst = 1; // Assert active-high reset
+        start   = 0;
 
         #100;
-        rst_n = 1;
+        btn_rst = 0; // Deassert reset
         #20;
 
         $display("========================================");
