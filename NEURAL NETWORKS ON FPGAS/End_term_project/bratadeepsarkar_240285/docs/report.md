@@ -30,9 +30,11 @@ Both simulation and hardware synthesis confirmed the logic.
 
 | Sample ID | Expected Class | Predicted Class | Status |
 | :--- | :--- | :--- | :--- |
-| 0 | 0 | 0 | **PASS** |
-| 1 | 1 | 1 | **PASS** |
-| 2 | 2 | 2 | **PASS** |
+| 0 | 0 (Setosa) | 0 | **PASS** |
+| 1 | 2 (Virginica) | 2 | **PASS** |
+| 2 | 1 (Versicolour) | 1 | **PASS** |
+| 3 | 1 (Versicolour) | 1 | **PASS** |
+| 4 | 0 (Setosa) | 0 | **PASS** |
 
 *Note: Simulation was verified against 10 test samples from `test_data.mem`.*
 

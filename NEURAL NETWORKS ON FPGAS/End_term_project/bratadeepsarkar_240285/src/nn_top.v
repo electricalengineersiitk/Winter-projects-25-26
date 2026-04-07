@@ -95,7 +95,6 @@ module nn_top (
     reg         o_start;
     reg  [15:0] o_data_in;
     reg  [2:0]  o_input_idx;
-    reg  [15:0] o_weight [0:2];   // current weight for each of the 3 neurons
     reg         o_last;
     wire [15:0] o_out [0:2];      // output of each of the 3 neurons
     wire [2:0]  o_valid;
