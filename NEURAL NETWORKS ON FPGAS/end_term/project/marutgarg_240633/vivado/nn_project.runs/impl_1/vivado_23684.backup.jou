@@ -1,0 +1,24 @@
+#-----------------------------------------------------------
+# Vivado v2025.2 (64-bit)
+# SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+# IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+# SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+# Start of session at: Fri Apr 10 02:00:41 2026
+# Process ID         : 23684
+# Current directory  : C:/Vivado Projects/nn_project/nn_project.runs/impl_1
+# Command line       : vivado.exe -log nn_top.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source nn_top.tcl -notrace
+# Log file           : C:/Vivado Projects/nn_project/nn_project.runs/impl_1/nn_top.vdi
+# Journal file       : C:/Vivado Projects/nn_project/nn_project.runs/impl_1\vivado.jou
+# Running On         : LAPTOP-M0HQRN51
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26200
+# Processor Detail   : 13th Gen Intel(R) Core(TM) i5-13420H
+# CPU Frequency      : 2611 MHz
+# CPU Physical cores : 8
+# CPU Logical cores  : 12
+# Host memory        : 16802 MB
+# Swap memory        : 13958 MB
+# Total Virtual      : 30761 MB
+# Available Virtual  : 5890 MB
+#-----------------------------------------------------------
+source nn_top.tcl -notrace
