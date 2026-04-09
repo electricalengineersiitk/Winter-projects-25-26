@@ -1,0 +1,290 @@
+
+PS D:\CODE\python_env> & d:\CODE\python_env\.venv\Scripts\Activate.ps1
+(.venv) PS D:\CODE\python_env> python .\DNN_Compression\main.py
+[Seed] Random seed set to 42
+
+Batch Shape Verification
+lbp                  (64, 1, 100, 100)
+canny                (64, 1, 100, 100)
+color_features       (64, 6)
+shape_features       (64, 6)
+label                (64,)
+[Data] Number of classes: 257
+[Config] Using GPU: NVIDIA GeForce RTX 4060 Laptop GPU
+[Config] VRAM: 8.6 GB
+[Config] cuDNN benchmark enabled
+
+Model 1: Baseline Training
+[Model] Parameters: 19,784,385
+Epoch [1/10]: 100%|███████| 2111/2111 [05:28<00:00,  6.42it/s, loss=1.1973, acc=59.35%, lr=0.001000]
+[Train] Epoch 1/10 | Loss: 1.8847 | Acc: 59.35% | LR: 0.000976
+Epoch [2/10]: 100%|███████| 2111/2111 [04:08<00:00,  8.48it/s, loss=1.2265, acc=85.03%, lr=0.000976]
+[Train] Epoch 2/10 | Loss: 1.0064 | Acc: 85.03% | LR: 0.000905
+Epoch [3/10]: 100%|███████| 2111/2111 [04:10<00:00,  8.41it/s, loss=0.9229, acc=89.70%, lr=0.000905]
+[Train] Epoch 3/10 | Loss: 0.8765 | Acc: 89.70% | LR: 0.000796
+Epoch [4/10]: 100%|███████| 2111/2111 [04:08<00:00,  8.49it/s, loss=0.6677, acc=92.35%, lr=0.000796]
+[Train] Epoch 4/10 | Loss: 0.8023 | Acc: 92.35% | LR: 0.000658
+Epoch [5/10]: 100%|███████| 2111/2111 [04:08<00:00,  8.50it/s, loss=0.6118, acc=94.29%, lr=0.000658]
+[Train] Epoch 5/10 | Loss: 0.7453 | Acc: 94.29% | LR: 0.000505
+Epoch [6/10]: 100%|███████| 2111/2111 [04:08<00:00,  8.48it/s, loss=0.8632, acc=95.94%, lr=0.000505]
+[Train] Epoch 6/10 | Loss: 0.6966 | Acc: 95.94% | LR: 0.000352
+Epoch [7/10]: 100%|███████| 2111/2111 [04:16<00:00,  8.24it/s, loss=0.6770, acc=97.23%, lr=0.000352]
+[Train] Epoch 7/10 | Loss: 0.6552 | Acc: 97.23% | LR: 0.000214
+Epoch [8/10]: 100%|███████| 2111/2111 [05:06<00:00,  6.89it/s, loss=0.5878, acc=98.15%, lr=0.000214]
+[Train] Epoch 8/10 | Loss: 0.6227 | Acc: 98.15% | LR: 0.000105
+Epoch [9/10]: 100%|███████| 2111/2111 [04:56<00:00,  7.12it/s, loss=0.6027, acc=98.67%, lr=0.000105]
+[Train] Epoch 9/10 | Loss: 0.6012 | Acc: 98.67% | LR: 0.000034
+Epoch [10/10]: 100%|██████| 2111/2111 [05:39<00:00,  6.22it/s, loss=0.6267, acc=99.00%, lr=0.000034]
+[Train] Epoch 10/10 | Loss: 0.5872 | Acc: 99.00% | LR: 0.000010
+Evaluating: 100%|█████████████████████████████████████| 704/704 [02:23<00:00,  4.90it/s, acc=95.65%]
+[Eval] Accuracy: 95.65%
+[Saved] compressed_models/baseline.npz
+
+Model 2: Pruning
+[Pruning] Done — threshold=0.05
+[Sparsity] 19715118/19781920 weights pruned (99.66%)
+
+  Evaluating accuracy loss from pruning...
+Evaluating: 100%|█████████████████████████████████████| 704/704 [01:37<00:00,  7.23it/s, acc=40.79%]
+
+  Retraining after pruning...
+Epoch [1/5]: 100%|████████| 2111/2111 [05:51<00:00,  6.00it/s, loss=0.8828, acc=90.98%, lr=0.001000]
+[Train] Epoch 1/5 | Loss: 0.9187 | Acc: 90.98% | LR: 0.000905
+Epoch [2/5]: 100%|████████| 2111/2111 [05:02<00:00,  6.99it/s, loss=0.7503, acc=94.80%, lr=0.000905]
+[Train] Epoch 2/5 | Loss: 0.7563 | Acc: 94.80% | LR: 0.000658
+Epoch [3/5]: 100%|████████| 2111/2111 [04:06<00:00,  8.55it/s, loss=0.7094, acc=95.97%, lr=0.000658]
+[Train] Epoch 3/5 | Loss: 0.7240 | Acc: 95.97% | LR: 0.000352
+Epoch [4/5]: 100%|████████| 2111/2111 [04:19<00:00,  8.12it/s, loss=0.7820, acc=96.79%, lr=0.000352]
+[Train] Epoch 4/5 | Loss: 0.6964 | Acc: 96.79% | LR: 0.000105
+Epoch [5/5]: 100%|████████| 2111/2111 [04:24<00:00,  7.97it/s, loss=0.6680, acc=97.23%, lr=0.000105]
+[Train] Epoch 5/5 | Loss: 0.6788 | Acc: 97.23% | LR: 0.000010
+Evaluating: 100%|█████████████████████████████████████| 704/704 [01:15<00:00,  9.37it/s, acc=95.24%]
+[Eval] Accuracy: 95.24%
+[Saved] compressed_models/pruned.npz
+[Loaded] compressed_models/pruned.npz
+
+Model 3: Quantization on Pruned
+[Quantization] Done — k=16 centroids (~4-bit, exact=4.00-bit)
+
+  Evaluating accuracy loss from quantization...
+Evaluating: 100%|█████████████████████████████████████| 704/704 [01:15<00:00,  9.33it/s, acc=92.44%]
+
+  Retraining after quantization...
+Epoch [1/5]: 100%|████████| 2111/2111 [05:04<00:00,  6.93it/s, loss=0.7327, acc=95.11%, lr=0.001000]
+[Train] Epoch 1/5 | Loss: 0.7438 | Acc: 95.11% | LR: 0.000905
+Epoch [2/5]: 100%|████████| 2111/2111 [05:44<00:00,  6.13it/s, loss=0.6089, acc=95.72%, lr=0.000905]
+[Train] Epoch 2/5 | Loss: 0.7276 | Acc: 95.72% | LR: 0.000658
+Epoch [3/5]: 100%|████████| 2111/2111 [07:19<00:00,  4.81it/s, loss=0.6753, acc=96.36%, lr=0.000658]
+[Train] Epoch 3/5 | Loss: 0.7053 | Acc: 96.36% | LR: 0.000352
+Epoch [4/5]: 100%|████████| 2111/2111 [04:51<00:00,  7.24it/s, loss=0.6949, acc=97.05%, lr=0.000352]
+[Train] Epoch 4/5 | Loss: 0.6830 | Acc: 97.05% | LR: 0.000105
+Epoch [5/5]: 100%|████████| 2111/2111 [04:01<00:00,  8.74it/s, loss=0.6306, acc=97.63%, lr=0.000105]
+[Train] Epoch 5/5 | Loss: 0.6670 | Acc: 97.63% | LR: 0.000010
+Evaluating: 100%|█████████████████████████████████████| 704/704 [01:12<00:00,  9.76it/s, acc=95.29%]
+[Eval] Accuracy: 95.29%
+[Saved] compressed_models/quantized.npz
+
+Model 4: Huffman Coding
+[Huffman] Saved stats   → compressed_models/huffman.npz          (0.33 MB)
+[Huffman] Saved weights → compressed_models/huffman_weights.npz  (3.78 MB)
+[Huffman] Avg bits/weight  : 1.0291
+[Huffman] Gain over int16  : 15.55x
+[Loaded] compressed_models/baseline.npz
+
+------------------------------------------------------------------
+  DEEP COMPRESSION RESULTS
+------------------------------------------------------------------
+
+  1. ACCURACY
+  Baseline                              95.65%
+  After Pruning  (before retrain)       40.79%   (loss 54.86%)
+  After Pruning  (recovered)            95.24%   (Δ -0.41%)
+  After Quantization (before retrain)   92.44%   (loss 2.80%)
+  After Quantization (recovered)        95.29%   (Δ -0.37%)
+  Total Accuracy Drop                   0.37%
+
+  2. STORAGE MEMORY
+  Baseline (.npz)                       47.30 MB
+  After Pruning (.npz)                  4.83 MB   (89.8% smaller  9.8x)
+  After Quantization (.npz)             4.83 MB   (89.8% smaller  9.8x)
+  Huffman Compressed (.npz)             0.33 MB   (99.3% smaller  141.5x)
+  Final Compression Ratio               141.5x
+
+  3. RUNTIME MEMORY
+  GPU VRAM Used                         546.1 MB
+  RAM Used by Process                   624.9 MB
+  Total Parameters                      19,784,385
+  Weights Pruned                        19,715,118 / 19,781,920   (99.7% sparse)
+
+  After Quantization (.npz)             4.83 MB   (89.8% smaller  9.8x)
+  Huffman Compressed (.npz)             0.33 MB   (99.3% smaller  141.5x)
+  Final Compression Ratio               141.5x
+
+  3. RUNTIME MEMORY
+  GPU VRAM Used                         546.1 MB
+  RAM Used by Process                   624.9 MB
+  Total Parameters                      19,784,385
+  Weights Pruned                        19,715,118 / 19,781,920   (99.7% sparse)
+
+  GPU VRAM Used                         546.1 MB
+  RAM Used by Process                   624.9 MB
+  Total Parameters                      19,784,385
+  Weights Pruned                        19,715,118 / 19,781,920   (99.7% sparse)
+
+  4. COMPRESSION DETAILS
+  Quantization                          k=16 centroids   (~4-bit)
+  Bits/weight after pruning+quantization0.0135
+  Bits/weight after Huffman             1.0291
+  Huffman coding gain                   15.55x over quantized
+
+------------------------------------------------------------------
+
+
+(.venv) PS D:\CODE\python_env> python .\DNN_Compression\eval.py
+[Config] Using GPU: NVIDIA GeForce RTX 4060 Laptop GPU
+[Config] VRAM: 8.6 GB
+[Config] cuDNN benchmark enabled
+
+[Setup] Downloading Fruits-360 dataset...
+
+[Setup] Loading model from DNN_Compression\compressed_models\quantized.npz ...
+[Loaded] DNN_Compression\compressed_models\quantized.npz
+
+[Eval] Running evaluation...
+Evaluating: 100%|█████████████████████████████████████| 704/704 [01:09<00:00, 10.20it/s, acc=95.29%]
+
+----------------------------------------------------------
+  EVALUATION RESULTS
+  quantized.npz
+----------------------------------------------------------
+
+  ACCURACY
+  Test Accuracy                     95.29%
+
+  STORAGE
+  Compressed file size              4.83 MB
+
+  PARAMETERS
+  Total parameters                  19,784,385
+  Non-zero (active)                 66,802   (0.3%)
+  Pruned (zero)                     19,715,118   (99.7% sparse)
+
+  COMPRESSION DETAILS
+  Quantization                      k=16 centroids   (~4-bit)
+  Bits/weight (pruning + quant)     0.0135
+
+----------------------------------------------------------
+
+(.venv) PS D:\CODE\python_env> python .\DNN_Compression\eval.py
+[Config] Using GPU: NVIDIA GeForce RTX 4060 Laptop GPU
+[Config] VRAM: 8.6 GB
+[Config] cuDNN benchmark enabled
+
+[Setup] Downloading Fruits-360 dataset...
+[Info] huffman.npz has no weights — loading from huffman_weights.npz
+
+[Setup] Loading model from DNN_Compression\compressed_models\huffman_weights.npz ...
+[Loaded] DNN_Compression\compressed_models\huffman_weights.npz
+
+[Eval] Running evaluation...
+Evaluating: 100%|█████████████████████████████████████| 704/704 [01:08<00:00, 10.22it/s, acc=95.28%]
+
+----------------------------------------------------------
+  EVALUATION RESULTS
+  huffman.npz
+----------------------------------------------------------
+
+  ACCURACY
+  Test Accuracy                     95.28%
+
+  STORAGE
+  Compressed file size              0.33 MB
+  Loadable weights file             3.78 MB   (huffman_weights.npz)
+
+  PARAMETERS
+  Total parameters                  19,784,385
+  Non-zero (active)                 66,802   (0.3%)
+  Pruned (zero)                     19,715,118   (99.7% sparse)
+
+  COMPRESSION DETAILS
+  Quantization                      k=16 centroids   (~4-bit)
+  Bits/weight (pruning + quant)     0.0135
+  Bits/weight (after Huffman)       1.0291 
+  Huffman gain                      15.55x over int16
+
+----------------------------------------------------------
+
+(.venv) PS D:\CODE\python_env> python .\DNN_Compression\eval.py
+[Error] File not found: DNN_Compression\compressed_modelaseline.npz
+Download the model from the Drive links in the README.
+(.venv) PS D:\CODE\python_env> python .\DNN_Compression\eval.py
+[Config] Using GPU: NVIDIA GeForce RTX 4060 Laptop GPU
+[Config] VRAM: 8.6 GB
+[Config] cuDNN benchmark enabled
+
+[Setup] Downloading Fruits-360 dataset...
+
+[Setup] Loading model from DNN_Compression\compressed_models\baseline.npz ...
+[Loaded] DNN_Compression\compressed_models\baseline.npz
+
+[Eval] Running evaluation...
+Evaluating: 100%|█████████████████████████████████████| 704/704 [01:06<00:00, 10.56it/s, acc=95.65%]
+
+----------------------------------------------------------
+  EVALUATION RESULTS
+  baseline.npz
+----------------------------------------------------------
+
+  ACCURACY
+  Test Accuracy                     95.65%
+
+  STORAGE
+  Compressed file size              47.30 MB
+
+  PARAMETERS
+  Total parameters                  19,784,385
+  Non-zero (active)                 19,781,920   (100.0%)
+  Pruned (zero)                     0   (0.0% sparse)
+
+  COMPRESSION DETAILS
+  Quantization                      k=16 centroids   (~4-bit)
+  Bits/weight (pruning + quant)     4.0000
+
+----------------------------------------------------------
+
+(.venv) PS D:\CODE\python_env> python .\DNN_Compression\eval.py
+[Config] Using GPU: NVIDIA GeForce RTX 4060 Laptop GPU
+[Config] VRAM: 8.6 GB
+[Config] cuDNN benchmark enabled
+
+[Setup] Downloading Fruits-360 dataset...
+
+[Setup] Loading model from DNN_Compression\compressed_models\pruned.npz ...
+[Loaded] DNN_Compression\compressed_models\pruned.npz
+
+[Eval] Running evaluation...
+Evaluating: 100%|█████████████████████████████████████| 704/704 [01:10<00:00, 10.02it/s, acc=95.24%]
+
+----------------------------------------------------------
+  EVALUATION RESULTS
+  pruned.npz
+----------------------------------------------------------
+
+  ACCURACY
+  Test Accuracy                     95.24%
+
+  STORAGE
+  Compressed file size              4.83 MB
+
+  PARAMETERS
+  Total parameters                  19,784,385
+  Non-zero (active)                 66,802   (0.3%)
+  Pruned (zero)                     19,715,118   (99.7% sparse)
+
+  COMPRESSION DETAILS
+  Quantization                      k=16 centroids   (~4-bit)
+  Bits/weight (pruning + quant)     0.0135
+
+----------------------------------------------------------
+
+(.venv) PS D:\CODE\python_env> 
