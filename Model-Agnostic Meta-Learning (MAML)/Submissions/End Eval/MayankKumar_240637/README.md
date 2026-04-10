@@ -30,6 +30,18 @@ python train.py
 This script runs the MAML meta-training loop for 500 iterations. It uses a meta-batch size of 4, an inner learning rate of 0.01, and 5 adaptation shots (inner steps). It also trains a baseline model from scratch for 200 steps on the test tasks. The trained MAML weights are saved to meta_model.pth.
 
 
+| Parameter | Value |
+| :--- | :--- |
+| **Network Architecture** | 3 layers × 64 neurons |
+| **Outer Optimizer (Meta)** | Adam (lr = 0.001) |
+| **Inner Optimizer (Task)** | SGD (lr = 0.01) |
+| **Inner Loop Steps** | 5 steps |
+| **Support Shots** | 10 shots |
+| **Tasks per Meta-Batch** | 4 tasks |
+| **Meta-Iterations** | 500 iterations |
+
+
+
 Part 5 — How to test
 ```bash
 python test.py
