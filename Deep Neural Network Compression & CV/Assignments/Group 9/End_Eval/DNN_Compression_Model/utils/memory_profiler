@@ -1,0 +1,10 @@
+import torch
+
+def report_runtime_memory():
+    if torch.cuda.is_available():
+        allocated = torch.cuda.memory_allocated() / (1024 ** 2)
+        reserved = torch.cuda.memory_reserved() / (1024 ** 2)
+        print(f"CUDA Memory Allocated: {allocated:.2f} MB")
+        print(f"CUDA Memory Reserved:  {reserved:.2f} MB")
+    else:
+        print("Running on CPU. CUDA tracking unavailable.")

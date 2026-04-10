@@ -1,0 +1,1 @@
+from .model_cifar import AlexNet, SmallCIFARNet, alexnet, small_cifar_net
