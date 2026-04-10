@@ -1,4 +1,3 @@
-# UAV_path_planning
 # UAV Formation Flight Simulation
 
 ### Part 1 — What Is built?
