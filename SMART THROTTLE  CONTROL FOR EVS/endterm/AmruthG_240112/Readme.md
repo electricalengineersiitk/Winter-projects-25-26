@@ -66,17 +66,21 @@ It is observed that a static PID controller is inadequate at boundary conditions
 ## Part 6 — Results and Observations
 
 ### 1. Open-Loop Response
-![Open Loop Response](./Results/open_loop_response.png)
+<img src="Results/open_loop_response.png" alt="Open Loop Response" width="800" />
+
 **Observation:** The open-loop system exhibits baseline stability but demonstrates a highly sluggish response, requiring approximately 2 seconds to reach a settled state. This corroborates the absolute necessity for active closed-loop control to achieve acceptable driving dynamics.
 
 ### 2. Baseline PID Response
-![PID Response](./Results/pid_response.png)
+<img src="Results/pid_response.png" alt="PID Response" width="800" />
+
 **Observation:** The integration of closed-loop PID control yields substantial performance enhancements, strictly satisfying all design specifications. The rise time is markedly superior—nearly an order of magnitude faster than the open-loop configuration—with highly nominal overshoot.
 
 ### 3. Gain-Scheduled Response
-![Gain Scheduled Response](./Results/gainscheduled_response.png)
+<img src="Results/gainscheduled_response.png" alt="Gain Scheduled Response" width="800" />
+
 **Observation:** This trajectory illustrates a 20% → 50% → 85% step sequence. The efficacy of the rate limiter is clearly evident in the ramped command signals, and the control effort ($u$) maintains a continuous, smooth profile independent of inter-zone transitions.
 
 ### 4. Comparison Plot
-![Comparison Plot](./Results/comparison_plot.png)
+<img src="Results/comparison_plot.png" alt="Comparison Plot" width="800" />
+
 **Observation:** This presents the definitive validation of the proposed architecture. Whereas the baseline PID exhibits aggressive overshoot in response to a 100% step command, the Gain-Scheduled controller intelligently resets the integral memory, thereby tracking the target velocity with optimal precision and maximum stability.
