@@ -34,7 +34,7 @@ def measure_inductance(true_L, C_ref=1e-9):
     return measured_L, error
 
 
-# TEST BLOCK (VERY IMPORTANT)
+# TEST BLOCK 
 if __name__ == "__main__":
     print("=== TESTING MEASUREMENT ===\n")
 
