@@ -1,1 +1,18 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
+venv/
+venv-ardupilot/
+env/
+
+.env
+
+*.log
+
+ardupilot/
+
+*.swp
+*.swo
+.DS_Store
