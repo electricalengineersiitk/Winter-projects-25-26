@@ -220,18 +220,7 @@ Fly at ground level
 
 ---
 
-## 15. Demo
-
-(Add your video link here)
-
-The demo should show:
-- Square path execution  
-- Orbit maneuver  
-- Safety rejection case  
-
----
-
-## 16. Results
+## 15. Results
 
 The system successfully:
 
@@ -244,13 +233,13 @@ All core functionalities worked as expected.
 
 ---
 
-## 17. What I Learned
+## 16. What I Learned
 
 Through this project, I learned how high-level natural language commands can be converted into structured control instructions for a UAV. I understood how trajectory generation works using mathematical models and how important safety validation is in real-world systems. Working with DroneKit and ArduPilot helped me understand MAVLink communication and drone control mechanisms. I also gained experience in debugging simulation issues such as GPS delays and connection errors. Overall, this project helped me bridge the gap between AI-based command interpretation and real-time control systems.
 
 ---
 
-## 18. Challenges Faced
+## 17. Challenges Faced
 
 - Setting up SITL and DroneKit connection  
 - Handling GPS initialization delays  
@@ -260,7 +249,7 @@ Through this project, I learned how high-level natural language commands can be 
 
 ---
 
-## 19. Limitations
+## 18. Limitations
 
 - Works only in simulation (SITL)  
 - Uses simple command parsing (limited NLP capability)  
@@ -269,7 +258,7 @@ Through this project, I learned how high-level natural language commands can be 
 
 ---
 
-## 20. Future Improvements
+## 19. Future Improvements
 
 - Integrate advanced LLM for better command understanding  
 - Add real-time obstacle detection  
@@ -279,6 +268,6 @@ Through this project, I learned how high-level natural language commands can be 
 
 ---
 
-## 21. Conclusion
+## 20. Conclusion
 
 This project demonstrates a complete pipeline for controlling UAVs using natural language. It combines AI, geometry, and control systems into a single working solution. The system successfully converts human instructions into safe and executable drone actions, providing a strong foundation for future real-world autonomous UAV applications.
