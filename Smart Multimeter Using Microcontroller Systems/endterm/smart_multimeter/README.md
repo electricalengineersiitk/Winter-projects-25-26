@@ -1,6 +1,5 @@
 # Smart Multimeter Simulation
 
-# What did you build?
 
 This project simulates a digital multimeter for measuring Resistance (R), Capacitance (C), and Inductance (L) with automatic range selection. The auto-ranging engine selects the correct scale automatically without user input. All three modes achieve accuracy well under 2%.
 
