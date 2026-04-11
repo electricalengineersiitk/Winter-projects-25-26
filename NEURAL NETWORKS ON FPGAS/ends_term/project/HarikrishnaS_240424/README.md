@@ -12,3 +12,5 @@ Open vivado and create a new project and use the files from my vivado folder. En
 
 LUT utilization - 1% (479).
 Timing slack (WNS) - 0.579ns.
+
+Thank you.
