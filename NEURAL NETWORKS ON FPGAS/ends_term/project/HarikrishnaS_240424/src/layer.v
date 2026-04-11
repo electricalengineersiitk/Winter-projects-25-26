@@ -51,7 +51,7 @@ module layer(
             $display("bias[0]=%h", bias_mem[0]);
         end
         
-        // input index (0 to 3) such that there it has 4 features
+    // input index (0 to 3) such that there are 4 features
         reg [1:0] idx;
         
         always @(posedge clk or negedge rst_n) begin
