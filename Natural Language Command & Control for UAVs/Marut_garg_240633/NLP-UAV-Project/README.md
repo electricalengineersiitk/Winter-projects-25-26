@@ -61,7 +61,25 @@ This ensures smooth and predictable motion.
 
 ---
 
-## 5. Command Handling (main_controller.py + llm_waypoints.py)
+## 5. Trajectory Visualizations
+
+This section shows the generated trajectories used by the drone for different commands.
+
+### Circle Trajectory
+![Circle](circle.png)
+
+### Helix Trajectory
+![Helix](helix.png)
+
+### Orbit Around Pole
+![Orbit](orbit.png)
+
+### Scan Pattern (Lawnmower)
+![Scan](scan.png)
+
+---
+
+## 6. Command Handling (main_controller.py + llm_waypoints.py)
 
 The system interprets user input and maps it to trajectory functions.
 
@@ -82,7 +100,7 @@ These waypoints are then passed to the drone controller.
 
 ---
 
-## 6. Safety Layer (safety_checker.py)
+## 7. Safety Layer (safety_checker.py)
 
 A critical part of the system is the safety validation layer.
 
@@ -102,7 +120,7 @@ This ensures that unsafe commands never reach the drone.
 
 ---
 
-## 7. Drone Control (DroneKit)
+## 8. Drone Control (DroneKit)
 
 The drone is controlled using DroneKit API.
 
@@ -119,7 +137,7 @@ The drone follows the generated path step-by-step.
 
 ---
 
-## 8. Simulation Environment (SITL)
+## 9. Simulation Environment (SITL)
 
 ArduPilot SITL is used to simulate the drone.
 
@@ -133,7 +151,7 @@ This allows testing without real hardware.
 
 ---
 
-## 9. File Description
+## 10. File Description
 
 connect_test.py  
 → Tests connection between Python and SITL  
@@ -155,7 +173,7 @@ main_controller.py
 
 ---
 
-## 10. Prerequisites
+## 11. Prerequisites
 
 - Ubuntu / WSL (recommended)  
 - Python 3.8+  
@@ -168,7 +186,7 @@ main_controller.py
 
 ---
 
-## 11. Installation
+## 12. Installation
 
 Clone the repository:
 
@@ -181,7 +199,7 @@ pip install -r requirements.txt
 
 ---
 
-## 12. How to Run
+## 13. How to Run
 
 Step 1: Start SITL
 
@@ -193,7 +211,7 @@ python main_controller.py
 
 ---
 
-## 13. Example Commands
+## 14. Example Commands
 
 Fly a 5 m square and come back  
 Go around the pole and come back  
@@ -202,7 +220,7 @@ Fly at ground level
 
 ---
 
-## 14. Demo
+## 15. Demo
 
 (Add your video link here)
 
@@ -213,7 +231,7 @@ The demo should show:
 
 ---
 
-## 15. Results
+## 16. Results
 
 The system successfully:
 
@@ -226,13 +244,13 @@ All core functionalities worked as expected.
 
 ---
 
-## 16. What I Learned
+## 17. What I Learned
 
 Through this project, I learned how high-level natural language commands can be converted into structured control instructions for a UAV. I understood how trajectory generation works using mathematical models and how important safety validation is in real-world systems. Working with DroneKit and ArduPilot helped me understand MAVLink communication and drone control mechanisms. I also gained experience in debugging simulation issues such as GPS delays and connection errors. Overall, this project helped me bridge the gap between AI-based command interpretation and real-time control systems.
 
 ---
 
-## 17. Challenges Faced
+## 18. Challenges Faced
 
 - Setting up SITL and DroneKit connection  
 - Handling GPS initialization delays  
@@ -242,7 +260,7 @@ Through this project, I learned how high-level natural language commands can be 
 
 ---
 
-## 18. Limitations
+## 19. Limitations
 
 - Works only in simulation (SITL)  
 - Uses simple command parsing (limited NLP capability)  
@@ -251,7 +269,7 @@ Through this project, I learned how high-level natural language commands can be 
 
 ---
 
-## 19. Future Improvements
+## 20. Future Improvements
 
 - Integrate advanced LLM for better command understanding  
 - Add real-time obstacle detection  
@@ -261,6 +279,6 @@ Through this project, I learned how high-level natural language commands can be 
 
 ---
 
-## 20. Conclusion
+## 21. Conclusion
 
 This project demonstrates a complete pipeline for controlling UAVs using natural language. It combines AI, geometry, and control systems into a single working solution. The system successfully converts human instructions into safe and executable drone actions, providing a strong foundation for future real-world autonomous UAV applications.
