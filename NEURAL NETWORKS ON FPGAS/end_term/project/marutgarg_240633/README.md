@@ -1,7 +1,9 @@
 # Neural Networks on FPGAs
 
 **Name:** Marut Garg
+
 **Roll No:** 240633
+
 **FPGA Board (Target):** Artix-7 AC701 Evaluation Platform
 
 ---
