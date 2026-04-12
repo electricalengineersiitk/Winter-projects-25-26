@@ -28,7 +28,9 @@ class EEGNet(nn.Module):
             nn.BatchNorm2d(16), nn.ELU(),
             nn.AvgPool2d((1, 4)), nn.Dropout(0.25)
         )
-        self.fc = nn.LazyLinear(2)
+        # Explicit size: 16 channels * 1 spatial * (n_time // 16 time bins)
+        self.n_flat = 16 * (n_time // 16)
+        self.fc = nn.Linear(self.n_flat, 2)
     def forward(self, x):
         return self.fc(self.b2(self.b1(x)).view(x.size(0), -1))
 def get_lda_pipeline():
