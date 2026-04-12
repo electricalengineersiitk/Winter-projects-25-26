@@ -1,4 +1,3 @@
-import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -6,23 +5,17 @@ import seaborn as sns
 from sklearn.model_selection import StratifiedGroupKFold
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, confusion_matrix
 
-from preprocess import get_clean_data, apply_bad_channel_interpolation, apply_spatial_ica, apply_average_reference
+from preprocess import get_clean_data, run_preprocessing_fold
 from features import apply_xdawn, extract_riemannian_covariances, extract_p300_features
-from models import EEGNet, get_lda_pipeline, get_svm_pipeline, get_eegnet_pipeline, get_riemannian_pipeline
-from ensemble import get_character_prediction
+from models import get_lda_pipeline, get_svm_pipeline, get_eegnet_pipeline, get_riemannian_pipeline
+from utils import setup_environment, get_symbol_itr, get_character_prediction
 
 # Trial duration constant for ITR: 12 flashes * 10 reps * ~0.175s SOA = ~21s per character
 TRIAL_DURATION = 21.0
 
-def get_symbol_itr(n, acc, dur=2.1):
-    if acc <= 1/n: return 0
-    if acc >= 0.999: acc = 0.999
-    bits = np.log2(n) + acc*np.log2(acc + 1e-10) + (1-acc)*np.log2((1-acc)/(n-1) + 1e-10)
-    return bits * (60.0 / dur)
 
 def run_benchmarking():
     datasets = ["BNCI2014_009", "EPFLP300"]
-    os.makedirs('results', exist_ok=True)
     all_summary = []
     
     # Testing subjects 1 to 3 to meet subject-level accuracy requirements
@@ -42,12 +35,16 @@ def run_benchmarking():
             skf = StratifiedGroupKFold(n_splits=5)
             groups = epochs.metadata['char_id'].values
             
+            # EEGNetv4 required specs
+            n_chans = X.shape[1]
+            n_times = X.shape[2]
+            
             models_list = [
                 ("LDA", get_lda_pipeline()),
                 ("SVM", get_svm_pipeline()),
                 ("Xdawn+LDA", get_lda_pipeline()), 
                 ("Riemannian MDM", get_riemannian_pipeline()),
-                ("EEGNet", get_eegnet_pipeline())
+                ("EEGNet", get_eegnet_pipeline(in_chans=n_chans, input_window_samples=n_times))
             ]
             
             for name, clf in models_list:
@@ -61,9 +58,7 @@ def run_benchmarking():
                     e_tr, e_te = epochs[train_idx].copy(), epochs[test_idx].copy()
                     y_tr, y_te = y[train_idx], y[test_idx]
                     
-                    e_tr, e_te = apply_bad_channel_interpolation(e_tr, e_te)
-                    e_tr, e_te = apply_average_reference(e_tr, e_te)
-                    e_tr, e_te = apply_spatial_ica(e_tr, e_te)
+                    e_tr, e_te = run_preprocessing_fold(e_tr, e_te)
                     
                     if "Xdawn" in name:
                         X_tr, X_te = apply_xdawn(e_tr, y_tr, e_te)
@@ -93,9 +88,9 @@ def run_benchmarking():
                     
                     metrics.append([
                         accuracy_score(y_te, y_pred),
-                        recall_score(y_te, y_pred),
-                        precision_score(y_te, y_pred, zero_division=0),
-                        f1_score(y_te, y_pred, zero_division=0)
+                        recall_score(y_te, y_pred, average='binary'),
+                        precision_score(y_te, y_pred, average='binary', zero_division=0),
+                        f1_score(y_te, y_pred, average='binary', zero_division=0)
                     ])
                     
                 avg_m = np.mean(metrics, axis=0)
@@ -112,13 +107,16 @@ def run_benchmarking():
                 plt.close()
                 print(f"    - F1: {avg_m[3]:.3f} | Char Acc: {char_acc*100:.1f}% | ITR: {itr:.2f} bpm")
                 
-                all_summary.append([ds_name, subj, name, avg_m[0], avg_m[3], char_acc, itr])
+                all_summary.append([ds_name, subj, name, avg_m[0], avg_m[3], avg_m[2], avg_m[1], char_acc, itr])
                 
     if all_summary:
-        df = pd.DataFrame(all_summary, columns=['Dataset', 'Subject', 'Model', 'Acc', 'F1', 'Char_Acc', 'ITR_N36'])
+        df = pd.DataFrame(all_summary, columns=['Dataset', 'Subject', 'Model', 'Acc', 'F1', 'Precision', 'Recall', 'Char_Acc', 'ITR_N36'])
         df.to_csv('results/all_subject_results.csv', index=False)
         print("\\n[DONE] Benchmark Complete. Results and Confusion Matrices saved to results/ folder.")
 
 if __name__ == "__main__":
+    setup_environment()
     run_benchmarking()
+    from ensemble import run_ensemble_benchmark
+    run_ensemble_benchmark()
 

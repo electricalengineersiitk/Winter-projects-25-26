@@ -1,18 +1,12 @@
-import os
 import numpy as np
 import matplotlib.pyplot as plt
-import mne
-import warnings
-from preprocess import get_clean_data, apply_bad_channel_interpolation, apply_spatial_ica
-warnings.filterwarnings('ignore')
-mne.set_log_level('WARNING')
-os.makedirs('results', exist_ok=True)
+from preprocess import get_clean_data, run_preprocessing_fold
+from utils import setup_environment
+
 def plot_dataset_erp(ax, dataset_name, subj=1):
-    epochs_obj, X, y = get_clean_data(dataset_name=dataset_name, subj=subj, apply_decimation=False)
+    epochs_obj, X, y = get_clean_data(dataset_name=dataset_name, subj=subj)
     dummy_te = epochs_obj.copy() 
-    epochs_obj, _ = apply_bad_channel_interpolation(epochs_obj, dummy_te)
-    epochs_obj.set_eeg_reference('average', verbose=False)
-    epochs_obj, _ = apply_spatial_ica(epochs_obj, dummy_te)
+    epochs_obj, _ = run_preprocessing_fold(epochs_obj, dummy_te)
     
     expected_p300_chans = ['Cz', 'Pz', 'PO7', 'PO8', 'POz', 'Oz', 'O1', 'O2']
     avail_chans = [ch for ch in expected_p300_chans if ch in epochs_obj.ch_names]
@@ -37,6 +31,7 @@ def plot_dataset_erp(ax, dataset_name, subj=1):
     ax.grid(True, alpha=0.2)
     ax.legend(loc='upper right', fontsize='small')
 if __name__ == "__main__":
+    setup_environment()
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
     print("--- Generating Comparative ERP Plots ---")
     print("  - Plotting BNCI2014_009...")

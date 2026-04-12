@@ -2,10 +2,11 @@ import mne
 import numpy as np
 from moabb.datasets import BNCI2014_009, EPFLP300
 from mne.preprocessing import ICA
+from autoreject import AutoReject
 import warnings
 warnings.filterwarnings('ignore', category=RuntimeWarning)
 SEED = 42
-def get_clean_data(dataset_name='BNCI2014_009', subj=1, apply_decimation=True):
+def get_clean_data(dataset_name='BNCI2014_009', subj=1):
     if dataset_name == 'BNCI2014_009':
         ds = BNCI2014_009()
     elif dataset_name == 'EPFLP300':
@@ -74,11 +75,18 @@ def apply_spatial_ica(epochs_train, epochs_test):
     ica.apply(epochs_test, verbose=False)
     return epochs_train, epochs_test
 
-def apply_average_reference(epochs_train, epochs_test):
+def run_preprocessing_fold(epochs_train, epochs_test):
     """
-    Re-references the signal to the average of all channels.
-    This is applied per-fold to prevent data leakage.
+    Unified preprocessing fold pipeline: Interpolation -> AutoReject -> ICA.
+    Re-referencing is already applied on continuous signal in get_clean_data.
     """
-    epochs_train.set_eeg_reference('average', verbose=False)
-    epochs_test.set_eeg_reference('average', verbose=False)
+    epochs_train, epochs_test = apply_bad_channel_interpolation(epochs_train, epochs_test)
+    
+    # AutoReject for bad epoch dropping/repairing
+    ar = AutoReject(random_state=SEED, n_jobs=1, verbose=False)
+    ar.fit(epochs_train)
+    epochs_train = ar.transform(epochs_train)
+    epochs_test = ar.transform(epochs_test)
+    
+    epochs_train, epochs_test = apply_spatial_ica(epochs_train, epochs_test)
     return epochs_train, epochs_test

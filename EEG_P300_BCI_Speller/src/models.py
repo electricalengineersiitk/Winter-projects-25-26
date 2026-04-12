@@ -12,27 +12,10 @@ try:
 except ImportError:
     MDM = None
 
-class EEGNet(nn.Module):
-    def __init__(self, n_chan=16, n_time=32):
-        super(EEGNet, self).__init__()
-        self.b1 = nn.Sequential(
-            nn.Conv2d(1, 8, (1, 16), padding='same', bias=False),
-            nn.BatchNorm2d(8),
-            nn.Conv2d(8, 16, (n_chan, 1), groups=8, bias=False),
-            nn.BatchNorm2d(16), nn.ELU(),
-            nn.AvgPool2d((1, 4)), nn.Dropout(0.25)
-        )
-        self.b2 = nn.Sequential(
-            nn.Conv2d(16, 16, (1, 8), groups=16, padding='same', bias=False),
-            nn.Conv2d(16, 16, (1, 1), bias=False),
-            nn.BatchNorm2d(16), nn.ELU(),
-            nn.AvgPool2d((1, 4)), nn.Dropout(0.25)
-        )
-        # Explicit size: 16 channels * 1 spatial * (n_time // 16 time bins)
-        self.n_flat = 16 * (n_time // 16)
-        self.fc = nn.Linear(self.n_flat, 2)
-    def forward(self, x):
-        return self.fc(self.b2(self.b1(x)).view(x.size(0), -1))
+try:
+    from braindecode.models import EEGNetv4
+except ImportError:
+    EEGNetv4 = None
 def get_lda_pipeline():
     return Pipeline([
         ('scaler', StandardScaler()),
@@ -43,11 +26,17 @@ def get_svm_pipeline():
         ('scaler', StandardScaler()),
         ('svm', SVC(probability=True, kernel='rbf'))
     ])
-def get_eegnet_pipeline():
+def get_eegnet_pipeline(in_chans=16, input_window_samples=257):
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     weight = torch.tensor([1.0, 5.0], device=device)
+    if EEGNetv4 is None:
+        raise ImportError("braindecode is not installed.")
     return NeuralNetClassifier(
-        EEGNet,
+        EEGNetv4,
+        module__in_chans=in_chans,
+        module__n_classes=2,
+        module__input_window_samples=input_window_samples,
+        module__final_conv_length='auto',
         criterion=nn.CrossEntropyLoss,
         criterion__weight=weight,
         optimizer=optim.Adam,
