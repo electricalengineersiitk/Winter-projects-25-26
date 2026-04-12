@@ -29,25 +29,20 @@ The design was successfully synthesized and implemented for the **Artix-7** arch
 | **Logic Utilization (LUT)** | **1%** |
 | **Status** | Bitstream Generated Successfully |
 
-*Note: A WNS of 8.866ns indicates the logic propagation delay is only ~1.134ns, allowing for massive potential scaling or much faster clock frequencies.*
+*Note: A WNS of 8.866 ns indicates the logic propagation delay is only ~1.134 ns, allowing for massive potential scaling or much faster clock frequencies.*
 
 ---
 
 ## 📂 Repository Structure (Deliverables)
 
-This repository contains all necessary source code, scripts, and generation files:
+This repository contains all necessary source code, simulation, scripts, and documentation matching the End-Term submission guidelines:
 
 ```text
-📦 fpga_nn_project
- ┣ 📂 src               # Hardware Design (Verilog)
- ┃ ┣ 📜 neuron.v        # Single neuron compute unit (MAC operations)
- ┃ ┣ 📜 layer.v         # Instantiates 8 neurons for the hidden layer
- ┃ ┣ 📜 nn_top.v        # Top-level module routing inputs to the network
- ┃ ┗ 📜 timing.xdc      # 100MHz clock constraint file
- ┣ 📂 python            # Software Design (AI/ML)
- ┃ ┣ 📜 train_and_export.py # PyTorch training script
- ┃ ┣ 📜 weights.mem     # Q8 Fixed-point trained weights
- ┃ ┗ 📜 biases.mem      # Q8 Fixed-point trained biases
- ┣ 📂 vivado            # Physical Proof
- ┃ ┗ 📜 nn_top.bit      # Final compiled hardware bitstream
- ┗ 📜 README.md         # Project documentation
+📦 project_submission
+ ┣ 📂 src               # Hardware Design (neuron.v, layer.v, nn_top.v, timing.xdc)
+ ┣ 📂 sim               # Testbench simulation files (tb_nn_top.v)
+ ┣ 📂 weights           # Q8 Fixed-point trained memory files (weights.mem, biases.mem)
+ ┣ 📂 python            # Software Design & ML Training (train_and_export.py)
+ ┣ 📂 vivado            # Physical compiled hardware bitstream (nn_top.bit)
+ ┣ 📂 docs              # Project documentation and utilization screenshots (Project_Report.pdf)
+ ┗ 📜 README.md         # Project overview and metrics
