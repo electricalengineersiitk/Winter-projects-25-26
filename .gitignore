@@ -26,3 +26,10 @@ models/*.h5
 # OS Files
 .DS_Store
 Thumbs.db
+
+# Project Docs & Temp Repos
+tmp_submission/
+COMPETITION CODE.TXT
+EEG_BrainSpeller_Requirements*.docx
+EEG_BrainSpeller_Requirements.md
+requirements_extracted.txt
