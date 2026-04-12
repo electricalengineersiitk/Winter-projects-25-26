@@ -42,7 +42,7 @@ module nn_top (
     // test_data.mem has 50 lines: 10 samples × (4 inputs + 1 label)
     reg [15:0] test_data_mem [0:49];
     initial begin
-        $readmemh("test_data.mem", test_data_mem);
+        $readmemh("weights/test_data.mem", test_data_mem);
     end
 
     // ══════════════════════════════════════════════════════════════════════
@@ -92,8 +92,8 @@ module nn_top (
     reg [15:0] b_out_mem [0:2];   // 3 biases
 
     initial begin
-        $readmemh("weights_output.mem", w_out_mem);
-        $readmemh("biases_output.mem", b_out_mem);
+        $readmemh("weights/weights_output.mem", w_out_mem);
+        $readmemh("weights/biases_output.mem", b_out_mem);
     end
 
     reg         o_start;
@@ -120,6 +120,7 @@ module nn_top (
         end
     endgenerate
 
+    // All output neurons compute synchronously, so checking one valid signal is sufficient
     wire o_all_valid = o_valid[0];
 
     // ══════════════════════════════════════════════════════════════════════
