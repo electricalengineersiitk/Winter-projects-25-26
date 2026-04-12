@@ -13,7 +13,7 @@ TRUE_STRINGS={
 }
 
 MODE="lda" #for Lda: "lda", for svm: "svm", for eegnet: "eegnet"
-SHOW_UI=True
+SHOW_UI=False
 UI_REPS=5
 
 def run():
