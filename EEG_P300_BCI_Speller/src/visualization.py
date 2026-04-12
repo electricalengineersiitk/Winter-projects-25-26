@@ -56,6 +56,7 @@ if __name__ == "__main__":
     plot_dataset_erp(ax2, 'EPFLP300', subj=1)
     plt.suptitle('Multi-Dataset ERP Comparison (Target vs Non-Target)', fontsize=16, y=1.02)
     plt.tight_layout()
-    plt.savefig('results/comparative_erp.png', bbox_inches='tight', dpi=200)
+    import config
+    plt.savefig(config.RESULTS_DIR / 'comparative_erp.png', bbox_inches='tight', dpi=200)
     plt.close()
-    print("Success: Saved to results/comparative_erp.png")
+    print(f"Success: Saved to {config.RESULTS_DIR / 'comparative_erp.png'}")

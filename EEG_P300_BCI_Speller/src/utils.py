@@ -1,15 +1,14 @@
 import warnings
 import numpy as np
 import mne
-
+import config
 
 def setup_environment():
     """Configure MNE logging, suppress warnings, and ensure results dir exists."""
-    from config import RESULTS_DIR
     mne.set_log_level('WARNING')
     warnings.filterwarnings('ignore')
-    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-
+    # Use config.RESULTS_DIR (Path object) to ensure folder is created in the right place
+    config.RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
 def get_symbol_itr(n, acc, dur=2.1):
     """
@@ -27,17 +26,11 @@ def get_symbol_itr(n, acc, dur=2.1):
             + (1 - acc) * np.log2((1 - acc) / (n - 1)))
     return bits * (60.0 / dur)
 
-
 def get_character_prediction(probs, y_test, flash_ids, n_reps=None):
     """
     Decode character identity from accumulated flash probabilities.
-
-    The P300 speller presents 6 rows + 6 columns = 12 flash groups per character.
-    n_reps repetitions of those 12 groups are averaged per character.
-
-    If n_reps is None, it is inferred automatically from the data by finding
-    the number of flashes per unique character boundary. This handles datasets
-    that differ in repetition count (e.g. BNCI=10, EPFLP300=15).
+    
+    Infers n_reps automatically if not provided (handles BNCI=10, EPFLP300=15).
     """
     unique_f = np.sort(np.unique(flash_ids))
     if len(unique_f) < 12:
@@ -46,12 +39,10 @@ def get_character_prediction(probs, y_test, flash_ids, n_reps=None):
     rows_ids = unique_f[:6]
     cols_ids = unique_f[6:]
 
-    # --- Auto-detect n_reps if not provided ---
     if n_reps is None:
-        # Count how many times flash_id 0 appears; that equals n_reps
+        # Auto-detect reps by counting occurrences of the first flash ID
         n_reps = int(np.sum(flash_ids == unique_f[0]))
-        if n_reps == 0:
-            n_reps = 10  # safe fallback
+        if n_reps == 0: n_reps = 10 
 
     flash_per_char = 12 * n_reps
     n_chars = len(probs) // flash_per_char
@@ -74,10 +65,8 @@ def get_character_prediction(probs, y_test, flash_ids, n_reps=None):
         for p, l, f in zip(char_probs, char_labels, char_flashes):
             agg_probs.setdefault(f, []).append(p)
             if l == 1:
-                if f in rows_ids:
-                    target_row = f
-                if f in cols_ids:
-                    target_col = f
+                if f in rows_ids: target_row = f
+                if f in cols_ids: target_col = f
 
         mean_probs = {f: np.mean(v) for f, v in agg_probs.items()}
         pred_row = rows_ids[np.argmax([mean_probs.get(r, 0.0) for r in rows_ids])]
