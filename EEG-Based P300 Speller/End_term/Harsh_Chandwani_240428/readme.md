@@ -58,6 +58,18 @@ Download the BCI Competition III Dataset II from https://www.bbci.de/competition
 
 ---
 
+---
+
+## Ground Truth Strings
+
+The true character sequences for Subjects A and B are obtained from the official BCI Competition III Dataset II website:
+
+https://www.bbci.de/competition/iii/results/index.html
+
+These strings are used as ground truth for evaluating character-level accuracy and computing Information Transfer Rate (ITR).
+
+---
+
 ## Usage
 
 Configure the run at the top of `src/main.py`:
