@@ -1,0 +1,71 @@
+# Neural Networks on FPGAs — Final Project
+
+**Name:** Bratadeep Sarkar  
+**Roll Number:** 240285  
+**FPGA Board:** Basys3 (Artix-7 XC7A35T)
+
+---
+
+## Project Description
+
+A 2-layer feedforward neural network implemented in Verilog that classifies
+Iris flower inputs into 3 classes (Setosa, Versicolour, Virginica).
+Weights are trained in Python, quantized to Q8 fixed-point (16-bit signed), 
+and exported as .mem files. The design is optimized for timing and resource 
+efficiency on the Basys3 FPGA.
+
+Network architecture: 4 inputs → 8 hidden neurons (ReLU) → 3 output neurons (Argmax)
+
+---
+
+## Performance Metrics (Basys 3)
+- **Target**: Artix-7 (xc7a35tcpg236-1)
+- **Clock**: 100 MHz
+- **Timing (WNS)**: **+0.018 ns** (Met)
+- **LUT Utilization**: 1218 (approx. 6%)
+- **Registers**: 814 (approx. 2%)
+- **DSPs**: 33
+
+## How to Run
+### 1. Verification (Simulation)
+Ensure `iverilog` and `vvp` are installed.
+```powershell
+# Compile and run integration simulation
+Copy-Item weights\*.mem .
+iverilog -o sim_out sim/tb_nn_top.v src/*.v
+vvp sim_out
+Remove-Item *.mem
+```
+
+### 2. Hardware Deployment (Vivado)
+1. Add fixed-point source files from `src/`.
+2. Add constraint file: `vivado/nn_top.xdc`.
+3. Add memory files: `weights/*.mem`.
+4. Run Synthesis and Implementation (Enable **Post-Route Physical Optimization**).
+5. Generate and load Bitstream.
+
+## Verification Results (10 Samples)
+
+| Sample ID | Expected | Predicted | Status |
+|-----------|----------|-----------|--------|
+| 0         | 0        | 0         | PASS   |
+| 1         | 2        | 2         | PASS   |
+| 2         | 1        | 1         | PASS   |
+| 3         | 1        | 1         | PASS   |
+| 4         | 0        | 0         | PASS   |
+| 5         | 1        | 1         | PASS   |
+| 6         | 0        | 0         | PASS   |
+| 7         | 0        | 0         | PASS   |
+| 8         | 2        | 2         | PASS   |
+| 9         | 1        | 1         | PASS   |
+
+**10/10 PASS** — 96.7% float accuracy → 100% hardware accuracy after Q8 quantization (seed=404, 400 epochs)
+
+---
+## Documentation
+- [View Full Project Report](docs/report.pdf)
+- [Python Training Script](python/train_and_export.py)
+- [Hardware Architecture Diagram](docs/block_diagram.png)
+
+---
+*Created by Bratadeep Sarkar | April 2026*
