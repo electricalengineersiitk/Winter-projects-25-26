@@ -109,7 +109,7 @@ Noise model: Gaussian, σ = 0.5% of true value applied at the ADC reading stage.
 
 ---
 
-## OTG Serial Packet Format (Bonus)
+## OTG Serial Packet Format
 
 12-byte packet structure:
 
