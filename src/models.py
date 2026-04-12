@@ -6,6 +6,12 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.svm import SVC
 from skorch import NeuralNetClassifier
 import torch.optim as optim
+
+try:
+    from pyriemann.classification import MDM
+except ImportError:
+    MDM = None
+
 class EEGNet(nn.Module):
     def __init__(self, n_chan=16, n_time=32):
         super(EEGNet, self).__init__()
@@ -51,3 +57,12 @@ def get_eegnet_pipeline():
         train_split=None, 
         verbose=0
     )
+
+def get_riemannian_pipeline():
+    """
+    Returns a Minimum Distance to Mean (MDM) classifier.
+    Expects Covariance matrices as input.
+    """
+    if MDM is None:
+        raise ImportError("pyriemann is not installed.")
+    return MDM()
