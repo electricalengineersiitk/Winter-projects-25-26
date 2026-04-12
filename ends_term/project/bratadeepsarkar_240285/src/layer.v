@@ -11,8 +11,8 @@
 module layer #(
     parameter NUM_NEURONS  = 8,
     parameter NUM_INPUTS   = 4,
-    parameter WEIGHT_FILE  = "weights/weights_hidden.mem",
-    parameter BIAS_FILE    = "weights/biases_hidden.mem"
+    parameter WEIGHT_FILE  = "weights_hidden.mem",
+    parameter BIAS_FILE    = "biases_hidden.mem"
 )(
     input  wire        clk,
     input  wire        rst_n,
