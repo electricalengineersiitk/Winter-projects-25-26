@@ -1,0 +1,87 @@
+
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+square_footage = [1100,1400,1425,1550,1600,1700,1750,1800,1875,2000,2100,2250,2300,2400,2450,2600,2800,2900,3000,3150,3300]
+prices          = [199000,245000,230000,215000,280000,295000,345000,315000,325000,360000,350000,385000,390000,425000,415000,455000,465000,495000,510000,545000,570000]
+
+
+x = np.array(square_footage, dtype=float)
+y = np.array(prices, dtype=float)
+n = len(x)
+
+
+def ols_fit(x, y):
+    x_mean = x.mean()
+    y_mean = y.mean()
+    m = np.sum((x - x_mean) * (y - y_mean)) / np.sum((x - x_mean)**2)
+    b = y_mean - m * x_mean
+    return m, b
+
+m_ols, b_ols = ols_fit(x, y)
+
+
+def gradient_descent_linear(x, y, alpha=0.1, iters=5000):
+    # normalize x
+    x_mean = x.mean()
+    x_std  = x.std(ddof=0)
+    if x_std == 0:
+        raise ValueError("Zero variance in x.")
+    x_norm = (x - x_mean) / x_std
+
+
+    X = np.column_stack([np.ones_like(x_norm), x_norm])
+    theta = np.zeros(2)
+
+    m = len(y)
+    for i in range(iters):
+        preds = X.dot(theta)
+        error = preds - y
+        grad = (1.0/m) * (X.T.dot(error))
+        theta -= alpha * grad
+
+
+    theta1_orig = theta[1] / x_std
+    theta0_orig = theta[0] - theta[1] * x_mean / x_std
+    return theta0_orig, theta1_orig, theta
+
+theta0_gd, theta1_gd, theta_norm = gradient_descent_linear(x, y, alpha=0.1, iters=5000)
+
+
+target = 2500.0
+pred_ols = m_ols * target + b_ols
+pred_gd  = theta0_gd * 1.0 + theta1_gd * target
+
+
+print("OLS slope (m): {:.12f}".format(m_ols))
+print("OLS intercept (b): {:.12f}".format(b_ols))
+print("OLS prediction for 2500 sq ft: ${:,.2f}".format(pred_ols))
+print()
+print("GD (mapped back) intercept: {:.12f}".format(theta0_gd))
+print("GD (mapped back) slope: {:.12f}".format(theta1_gd))
+print("GD prediction for 2500 sq ft: ${:,.2f}".format(pred_gd))
+
+
+plt.figure(figsize=(10,6))
+plt.scatter(x, y, marker='x', label='Data', color='tab:orange')
+
+x_line = np.linspace(min(x)-50, max(x)+50, 200)
+y_line_ols = m_ols * x_line + b_ols
+y_line_gd  = theta0_gd * 1.0 + theta1_gd * x_line
+
+plt.plot(x_line, y_line_ols, label='OLS Best Fit Line', color='tab:blue', linewidth=2)
+plt.plot(x_line, y_line_gd, label='Gradient Descent Fit', color='tab:red', linestyle='--', linewidth=1.5)
+
+plt.xlabel("Square Footage")
+plt.ylabel("Price ($)")
+plt.title("House Price vs Square Footage — OLS vs Gradient Descent")
+plt.legend()
+plt.grid(alpha=0.3)
+plt.tight_layout()
+
+
+plt.savefig("best_fit_ols_vs_gd.png", dpi=200)
+print("\nPlot saved as 'best_fit_ols_vs_gd.png'.")
+plt.show()
