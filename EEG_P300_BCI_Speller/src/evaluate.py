@@ -3,42 +3,16 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.model_selection import KFold, GroupKFold
+from sklearn.model_selection import StratifiedGroupKFold
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score, confusion_matrix
 
 from preprocess import get_clean_data, apply_bad_channel_interpolation, apply_spatial_ica, apply_average_reference
 from features import apply_xdawn, extract_riemannian_covariances, extract_p300_features
 from models import EEGNet, get_lda_pipeline, get_svm_pipeline, get_eegnet_pipeline, get_riemannian_pipeline
+from ensemble import get_character_prediction
 
-def get_character_prediction(probs, y_test, flash_ids, n_reps=10):
-    unique_f = np.sort(np.unique(flash_ids))
-    if len(unique_f) < 12: return 0 
-    rows_ids = unique_f[:6]
-    cols_ids = unique_f[6:]
-    flash_per_char = 12 * n_reps
-    n_chars = len(probs) // flash_per_char
-    correct_chars = 0
-    for i in range(n_chars):
-        start = i * flash_per_char
-        end = (i + 1) * flash_per_char
-        char_probs = probs[start:end]
-        char_labels = y_test[start:end]
-        char_flashes = flash_ids[start:end]
-        agg_probs = {}
-        target_row = -1
-        target_col = -1
-        for p, l, f in zip(char_probs, char_labels, char_flashes):
-            if f not in agg_probs: agg_probs[f] = []
-            agg_probs[f].append(p)
-            if l == 1:
-                if f in rows_ids: target_row = f
-                if f in cols_ids: target_col = f
-        mean_probs = {f: np.mean(v) for f, v in agg_probs.items()}
-        pred_row = rows_ids[np.argmax([mean_probs.get(r, 0) for r in rows_ids])]
-        pred_col = cols_ids[np.argmax([mean_probs.get(c, 0) for c in cols_ids])]
-        if pred_row == target_row and pred_col == target_col:
-            correct_chars += 1
-    return correct_chars / n_chars if n_chars > 0 else 0
+# Trial duration constant for ITR: 12 flashes * 10 reps * ~0.175s SOA = ~21s per character
+TRIAL_DURATION = 21.0
 
 def get_symbol_itr(n, acc, dur=2.1):
     if acc <= 1/n: return 0
@@ -65,7 +39,7 @@ def run_benchmarking():
                 print(f"  Skipping subject {subj} due to loading error: {e}")
                 continue
                 
-            skf = GroupKFold(n_splits=5)
+            skf = StratifiedGroupKFold(n_splits=5)
             groups = epochs.metadata['char_id'].values
             
             models_list = [
@@ -126,7 +100,7 @@ def run_benchmarking():
                     
                 avg_m = np.mean(metrics, axis=0)
                 char_acc = get_character_prediction(np.array(subject_probs), np.array(subject_y), np.array(subject_flashes))
-                itr = get_symbol_itr(36, char_acc, dur=21.0)
+                itr = get_symbol_itr(36, char_acc, dur=TRIAL_DURATION)
                 y_pred_all = (np.array(subject_probs) > 0.5).astype(int)
                 cm = confusion_matrix(subject_y, y_pred_all)
                 
