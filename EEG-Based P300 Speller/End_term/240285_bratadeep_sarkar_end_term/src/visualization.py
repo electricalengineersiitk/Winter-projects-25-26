@@ -13,6 +13,9 @@ def plot_dataset_erp(ax, dataset_name, subj=1):
     epochs_obj, _ = apply_bad_channel_interpolation(epochs_obj, dummy_te)
     epochs_obj.set_eeg_reference('average', verbose=False)
     epochs_obj, _ = apply_spatial_ica(epochs_obj, dummy_te)
+    
+    expected_p300_chans = ['Cz', 'Pz', 'PO7', 'PO8', 'POz', 'Oz', 'O1', 'O2']
+    avail_chans = [ch for ch in expected_p300_chans if ch in epochs_obj.ch_names]
     if avail_chans:
         epochs_obj.pick(avail_chans)
         X = epochs_obj.get_data()
