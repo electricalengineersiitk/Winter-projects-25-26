@@ -173,7 +173,54 @@ main_controller.py
 
 ---
 
-## 11. Prerequisites
+## 11. Demo Videos
+
+This section demonstrates the working of the system for different commands executed in ArduPilot SITL.
+
+### 1. Square Trajectory
+Command:
+Fly a 5 m square and come back  
+
+Demo:
+https://drive.google.com/file/d/186i-4Hxt1fhnCxK9kHZ9CgcBkSEOSwJV/view?usp=drive_link
+
+---
+
+### 2. Orbit / Circle (Primary Use Case)
+Command:
+Go around the pole and come back  
+
+Demo:
+https://drive.google.com/file/d/1XwrryyWaTZLi4y6tPfLdjackLpz7a1m4/view?usp=drive_link 
+
+---
+
+### 3. Straight Line Movement
+Command:
+Fly north 10 meters then hover  
+
+Demo:
+https://drive.google.com/file/d/1H8nNJ05UQw9P3sQx-rnwY66aWv-t9B4z/view?usp=drive_link 
+
+---
+
+### 4. Safety Check (Invalid Command)
+Command:
+Fly at ground level  
+
+Result:
+Mission rejected due to safety constraints  
+
+Demo:
+https://drive.google.com/file/d/1vMyg6is4vnZoZ0-OviaY9c5LgXlHakwQ/view?usp=drive_link 
+
+---
+
+All demonstrations were performed using ArduPilot SITL. The videos show successful execution of valid commands and proper rejection of unsafe commands by the safety layer.
+
+---
+
+## 12. Prerequisites
 
 - Ubuntu / WSL (recommended)  
 - Python 3.8+  
@@ -186,7 +233,7 @@ main_controller.py
 
 ---
 
-## 12. Installation
+## 13. Installation
 
 Clone the repository:
 
@@ -199,7 +246,7 @@ pip install -r requirements.txt
 
 ---
 
-## 13. How to Run
+## 14. How to Run
 
 Step 1: Start SITL
 
@@ -211,7 +258,7 @@ python main_controller.py
 
 ---
 
-## 14. Example Commands
+## 15. Example Commands
 
 Fly a 5 m square and come back  
 Go around the pole and come back  
@@ -220,7 +267,7 @@ Fly at ground level
 
 ---
 
-## 15. Results
+## 16. Results
 
 The system successfully:
 
@@ -233,13 +280,13 @@ All core functionalities worked as expected.
 
 ---
 
-## 16. What I Learned
+## 17. What I Learned
 
 Through this project, I learned how high-level natural language commands can be converted into structured control instructions for a UAV. I understood how trajectory generation works using mathematical models and how important safety validation is in real-world systems. Working with DroneKit and ArduPilot helped me understand MAVLink communication and drone control mechanisms. I also gained experience in debugging simulation issues such as GPS delays and connection errors. Overall, this project helped me bridge the gap between AI-based command interpretation and real-time control systems.
 
 ---
 
-## 17. Challenges Faced
+## 18. Challenges Faced
 
 - Setting up SITL and DroneKit connection  
 - Handling GPS initialization delays  
@@ -249,7 +296,7 @@ Through this project, I learned how high-level natural language commands can be 
 
 ---
 
-## 18. Limitations
+## 19. Limitations
 
 - Works only in simulation (SITL)  
 - Uses simple command parsing (limited NLP capability)  
@@ -258,7 +305,7 @@ Through this project, I learned how high-level natural language commands can be 
 
 ---
 
-## 19. Future Improvements
+## 20. Future Improvements
 
 - Integrate advanced LLM for better command understanding  
 - Add real-time obstacle detection  
@@ -268,6 +315,6 @@ Through this project, I learned how high-level natural language commands can be 
 
 ---
 
-## 20. Conclusion
+## 21. Conclusion
 
 This project demonstrates a complete pipeline for controlling UAVs using natural language. It combines AI, geometry, and control systems into a single working solution. The system successfully converts human instructions into safe and executable drone actions, providing a strong foundation for future real-world autonomous UAV applications.
