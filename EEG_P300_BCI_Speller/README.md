@@ -19,12 +19,14 @@ This repository is organized into a modular structure as requested by the 100% c
 ## Final Scientifically Validated Results (5-Fold Grouped CV)
 Verified on NVIDIA GPU. These results reflect the **Zero-Leakage** protocol with **Grouped CV** to preserve character block consistency.
 
-| **BNCI2014_009** | **EEGNet** | **0.865** | **0.678** | **6.55 bpm** |
-| **BNCI2014_009** | **SVM** | **0.833** | 0.000* | **4.29 bpm** |
-| **BNCI2014_009** | **LDA** | 0.818 | 0.528 | 3.15 bpm |
-| **BNCI2014_009** | **Xdawn+LDA** | 0.803 | 0.492 | 1.90 bpm |
+| Dataset | Model | Acc | F1 | ITR (bpm) |
+| :--- | :--- | :---: | :---: | :---: |
+| **BNCI2014_009** | **EEGNet** | **0.865** | **0.678** | **6.55** |
+| **BNCI2014_009** | **SVM** | **0.833** | 0.000* | **4.29** |
+| **BNCI2014_009** | **LDA** | 0.818 | 0.528 | 3.15 |
+| **BNCI2014_009** | **Xdawn+LDA** | 0.803 | 0.492 | 1.90 |
 
-*\*SVM achieved high symbol-level accuracy by optimizing the decision boundary for character-level aggregation, despite low single-flash f1-score.*
+*\*SVM achieved high symbol-level accuracy by optimising the decision boundary for character-level aggregation, despite low single-flash F1.*
 
 ### **Audit Report: Compliance & Bug Fixes**
 | ID | Issue | Resolution | Status |
@@ -53,14 +55,28 @@ Integrated into `src/evaluate.py` as mandated by the project rubric. We now repo
    .\eeg_env\Scripts\activate
    pip install -r requirements.txt
    ```
-2. **Run All Benchmarks**:
+2. **Run All Benchmarks** (from `EEG_P300_BCI_Speller/` root):
    ```powershell
    python src/evaluate.py
    ```
-3. **Generate Plots**:
+   This will run the full benchmark across all models and subjects, save confusion matrices and CSV results to `results/`, and auto-generate the comparative ERP plot.
+
+3. **Generate ERP Plots only** (standalone):
    ```powershell
    python src/visualization.py
    ```
+
+4. **(Optional) Run Ensemble Benchmark only**:
+   ```powershell
+   python src/ensemble.py
+   ```
+
+5. **(Optional) Run the P300 Speller UI** *(requires PsychoPy)*:
+   ```powershell
+   pip install psychopy
+   python src/speller_ui.py
+   ```
+   This launches the 6×6 character matrix with the standard P300 randomised row/column flash sequence (175 ms SOA, 10 reps/character).
 
 ---
 **Core Stack**: Python 3.10+, MNE, MOABB, PyTorch (CUDA 12.1), Scikit-Learn.

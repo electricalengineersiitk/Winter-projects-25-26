@@ -60,6 +60,9 @@ def run_benchmarking():
                     # Feature extraction per model type
                     if "Xdawn" in name:
                         X_tr, X_te = apply_xdawn(e_tr, y_tr, e_te)
+                        # Decimate Xdawn output to keep feature size consistent with LDA/SVM
+                        X_tr = X_tr[:, ::config.DECIMATION_FACTOR]
+                        X_te = X_te[:, ::config.DECIMATION_FACTOR]
 
                     elif "Riemannian" in name:
                         X_tr = extract_riemannian_covariances(e_tr.get_data())
@@ -82,7 +85,18 @@ def run_benchmarking():
                     clf.fit(X_tr, y_tr)
                     y_pred = clf.predict(X_te)
 
-                    subject_probs.extend(clf.predict_proba(X_te)[:, 1])
+                    # Riemannian MDM does not implement predict_proba;
+                    # fall back to decision_function, then binary prediction as last resort.
+                    try:
+                        fold_probs = clf.predict_proba(X_te)[:, 1]
+                    except (AttributeError, NotImplementedError):
+                        try:
+                            scores = clf.decision_function(X_te)
+                            fold_probs = 1.0 / (1.0 + np.exp(-scores))  # sigmoid to [0,1]
+                        except (AttributeError, NotImplementedError):
+                            fold_probs = y_pred.astype(float)
+
+                    subject_probs.extend(fold_probs)
                     subject_y.extend(y_te)
                     subject_flashes.extend(e_te.metadata['flash_id'].values)
 
@@ -127,7 +141,23 @@ def run_benchmarking():
         df.to_csv(config.RESULTS_DIR / 'all_subject_results.csv', index=False)
         print(f"\n[DONE] Benchmark complete. Results saved to {config.RESULTS_DIR}")
 
+        # Auto-generate comparative ERP plots after benchmarking
+        try:
+            from visualization import plot_dataset_erp
+            print("\n[PLOTS] Generating comparative ERP plots...")
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+            plot_dataset_erp(ax1, 'BNCI2014_009', subj=1)
+            plot_dataset_erp(ax2, 'EPFLP300', subj=1)
+            plt.suptitle('Multi-Dataset ERP Comparison (Target vs Non-Target)', fontsize=16, y=1.02)
+            plt.tight_layout()
+            plt.savefig(config.RESULTS_DIR / 'comparative_erp.png', bbox_inches='tight', dpi=150)
+            plt.close()
+            print(f"[PLOTS] Saved to {config.RESULTS_DIR / 'comparative_erp.png'}")
+        except Exception as e:
+            print(f"[PLOTS] Skipped ERP plot generation: {e}")
+
 
 if __name__ == "__main__":
     setup_environment()
     run_benchmarking()
+

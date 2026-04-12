@@ -11,6 +11,6 @@ seaborn>=0.12
 psychopy>=2023.1
 pandas>=2.0
 skorch>=0.15
-braindecode
+braindecode>=0.8
 pyriemann
 autoreject>=0.3.3
