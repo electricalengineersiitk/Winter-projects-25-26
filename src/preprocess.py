@@ -72,3 +72,12 @@ def apply_spatial_ica(epochs_train, epochs_test):
     ica.apply(epochs_train, verbose=False)
     ica.apply(epochs_test, verbose=False)
     return epochs_train, epochs_test
+
+def apply_average_reference(epochs_train, epochs_test):
+    """
+    Re-references the signal to the average of all channels.
+    This is applied per-fold to prevent data leakage.
+    """
+    epochs_train.set_eeg_reference('average', verbose=False)
+    epochs_test.set_eeg_reference('average', verbose=False)
+    return epochs_train, epochs_test
