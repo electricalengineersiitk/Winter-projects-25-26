@@ -61,7 +61,7 @@ This regenerates all three `.mem` files in `weights/` from scratch.
 
 ---
 
-## Metrics (fill in after synthesis)
+## Metrics
 
 | Metric | Value |
 |--------|-------|
