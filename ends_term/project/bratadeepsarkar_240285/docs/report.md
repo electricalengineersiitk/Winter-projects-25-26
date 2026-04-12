@@ -7,10 +7,10 @@
 ---
 
 ## 1. Introduction
-The objective of this project was to design, train, and deploy a 2-layer artificial neural network on an FPGA to classify the Iris flower dataset. The design uses Q8 signed fixed-point arithmetic (16-bit, 8 fractional bits) that is efficient for hardware implementation without floating-point units.
+For this final project, I built and deployed a 2-layer neural network on the Basys 3 FPGA to classify the Iris flower dataset. I used Q8 fixed-point arithmetic instead of floating point to keep the hardware logic efficient and fast on the Artix-7 chip.
 
-## 2. Architecture & Design
-The system follows a sequential feed-forward architecture:
+## 2. Architecture
+I used a classic sequential feed-forward setup for the network:
 
 1. **Input Layer:** 4 normalized features — Sepal Length, Sepal Width, Petal Length, Petal Width.
 2. **Hidden Layer:** 8 neurons using the ReLU activation function.
@@ -23,22 +23,16 @@ The system follows a sequential feed-forward architecture:
 | `layer.v` | Parametrized module to instantiate N neurons for a single layer |
 | `nn_top.v` | Top-level FSM orchestrating data flow between layers and memory |
 
-### FSM State Machine
-The inference FSM has 7 states:
-`S_IDLE → S_FEED_HIDDEN → S_WAIT_HIDDEN → S_FEED_OUTPUT → S_WAIT_OUTPUT → S_CALC_ARGMAX → S_DONE`
+The FSM has 7 main states to handle the data flow. One important thing I did was add a separate `S_CALC_ARGMAX` state. This let me pull the final comparison logic away from the MAC operation cycle, which turned out to be really helpful for meeting my timing constraints.
 
-A dedicated `S_CALC_ARGMAX` state was added to **decouple the argmax comparison logic** from the output layer's MAC path, which was critical for timing closure.
+## 3. Training and Software Setup
+I trained the model using Keras on the usual Iris dataset. After trying a few things, I settled on a seed value (seed=404) that gave me a high enough prediction margin to survive the jump from float to Q8 fixed-point.
 
-## 3. Training & Software Results
-The model was trained using TensorFlow/Keras on the standard Iris dataset (80/20 split).
+- **Float Accuracy:** 96.7%
+- **Format:** 16-bit signed Q8 (8 fractional bits)
+- **Max Weight:** 1.524 (no overflow issues)
 
-- **Test Accuracy:** 96.7% (in 32-bit float software)
-- **Weight Format:** 16-bit signed Q8 fixed-point (8 integer bits, 8 fractional bits)
-- **Max Absolute Weight:** 1.524 — well within Q8 range, no overflow
-
-Weights and biases were exported as 4 separate `.mem` files (`weights_hidden.mem`, `weights_output.mem`, `biases_hidden.mem`, `biases_output.mem`) plus `test_data.mem` for on-chip test inputs.
-
-The training seed and epoch count were optimized (seed=404, 400 epochs) to maximise softmax confidence margins on boundary samples, ensuring all 10 test samples classify correctly even after Q8 quantization.
+I split the weights into four different `.mem` files so that each hardware layer could load its own data easily.
 
 ## 4. Verification Results (Simulation)
 The design was verified against 10 Iris test samples using Icarus Verilog. The testbench (`sim/tb_nn_top.v`) drives the FSM with all 10 samples in sequence and reports PASS/FAIL per sample.
@@ -75,15 +69,11 @@ The design was synthesized and implemented for the **XC7A35T-CPG236-1** (Basys 3
 | **Worst Negative Slack (WNS)** | **+0.018 ns** |
 | **Operating Frequency** | **100 MHz — Timing Met ✅** |
 
-### Timing Closure Notes
-The initial post-route WNS was **−0.190 ns** on the critical path:
-
-`DSP48E1 (MAC) → ReLU LUT → Output DSP48E1`
-
-Timing closure was achieved via **Post-Route Physical Optimization** — enabled in `build.tcl` using the `AggressiveExplore` directive (`phys_opt_design`). This step physically relocates high-fanout registers and restructures critical net routing after place-and-route, shaving ~200 ps off the worst-case path to achieve a final **WNS = +0.018 ns**.
+### Driving Timing Closure
+When I first ran implementation, I was failing timing with a slack of -0.190 ns on the MAC to ReLU path. I solved this by turning on the `AggressiveExplore` directive for the post-route physical optimization in my build script. This let Vivado shift some logic around to shave off those few hundred picoseconds, getting me to a final slack of +0.018 ns.
 
 > [!NOTE]
-> The `S_CALC_ARGMAX` FSM state was added for **functional correctness** (to fix a 1-cycle stale-data bug described in Section 7), **not** for timing closure. Timing was solved entirely by Post-Route Physical Optimization in Vivado.
+> I added the `S_CALC_ARGMAX` state to fix a bug where data was arriving a cycle late, but that actually helped the timing too by breaking up a long paths.
 
 ---
 

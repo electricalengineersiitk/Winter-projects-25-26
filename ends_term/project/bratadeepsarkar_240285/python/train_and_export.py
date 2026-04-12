@@ -1,9 +1,6 @@
 """
-FPGA Neural Network — Training & Weight Export Script
-Student: Bratadeep Sarkar, Roll: 240285
-Dataset: Iris (4 features, 3 classes)
-Architecture: 4 -> 8 (ReLU) -> 3 (Softmax)
-Fixed-point: Q8 (multiply by 256, 16-bit signed)
+Iris Classifier - Training and Export
+For the FPGA implementation, I'm exporting weights as Q8 fixed-point (16-bit signed).
 """
 
 import numpy as np
@@ -14,11 +11,11 @@ from sklearn.preprocessing import StandardScaler
 import tensorflow as tf
 from tensorflow import keras
 
-# ─── 1. REPRODUCIBILITY ────────────────────────────────────────────────────────
+# Setting seeds for random number generators so results are consistent
 np.random.seed(404)
 tf.random.set_seed(404)
 
-# ─── 2. LOAD AND PREPROCESS DATA ───────────────────────────────────────────────
+# Load the Iris dataset
 iris = load_iris()
 X = iris.data.astype(np.float32)   # shape: (150, 4)
 y = iris.target                     # 0, 1, or 2
@@ -30,7 +27,7 @@ X_scaled = scaler.fit_transform(X)
 X_train, X_test, y_train, y_test = train_test_split(
     X_scaled, y, test_size=0.2, random_state=42, stratify=y)
 
-# ─── 3. BUILD AND TRAIN MODEL ──────────────────────────────────────────────────
+# Build and train the model (4 -> 8 -> 3)
 model = keras.Sequential([
     keras.layers.Dense(8, activation='relu', input_shape=(4,),
                         kernel_initializer='glorot_uniform', name='hidden'),
@@ -46,12 +43,12 @@ model.fit(X_train, y_train,
           validation_split=0.1,
           verbose=0)
 
-# ─── 4. EVALUATE ───────────────────────────────────────────────────────────────
+# Quick evaluation to see if accuracy is good enough
 loss, acc = model.evaluate(X_test, y_test, verbose=0)
-print(f"Test accuracy: {acc*100:.1f}%  (must be > 90% to proceed)")
-assert acc >= 0.89, f"Accuracy too low: {acc}. Re-run to get different seed."
+print(f"Accuracy on test set: {acc*100:.1f}%")
+assert acc >= 0.89, "Accuracy is too low. Try a different seed."
 
-# ─── 5. EXTRACT WEIGHTS ────────────────────────────────────────────────────────
+# Grab weights and biases from the layers
 hidden_layer = model.get_layer('hidden')
 output_layer = model.get_layer('output')
 
@@ -66,7 +63,7 @@ print(f"  b_hidden:  {b_hidden.shape}")
 print(f"  W_output:  {W_output.shape}  (8 inputs × 3 neurons)")
 print(f"  b_output:  {b_output.shape}")
 
-# ─── 6. QUANTISE TO Q8 ─────────────────────────────────────────────────────────
+# Q8 conversion: multiply by 256 and round to the nearest integer
 def to_q8(val):
     """Convert float to 16-bit signed Q8 integer."""
     q = int(round(float(val) * 256))
@@ -80,9 +77,11 @@ def to_hex16(val):
         q = q + 65536  # two's complement 16-bit
     return f"{q:04X}"
 
-# ─── 7. WRITE .mem FILES ───────────────────────────────────────────────────────
+# Save everything to .mem files in the weights directory
 weights_dir = os.path.join(os.path.dirname(__file__), '..', 'weights')
 os.makedirs(weights_dir, exist_ok=True)
+
+print("\nSaving memory files...")
 
 # weights_hidden.mem: 32 values
 # Layout: neuron 0 weights (inputs 0,1,2,3), neuron 1 weights, ..., neuron 7
@@ -107,39 +106,31 @@ with open(os.path.join(weights_dir, 'biases_hidden.mem'), 'w') as f:
         f.write(to_hex16(b_hidden[n]) + '\n')
 print(f"Wrote biases_hidden.mem — 8 values")
 
-# biases_output.mem: 3 values
-with open(os.path.join(weights_dir, 'biases_output.mem'), 'w') as f:
-    for n in range(3):
-        f.write(to_hex16(b_output[n]) + '\n')
-print(f"Wrote biases_output.mem — 3 values")
+print("Wrote output weights and all biases.")
 
-# test_data.mem: 10 test samples
-# Format per sample: 4 input lines then 1 label line = 5 lines per sample
-# Inputs are Q8 quantised scaled values; label is raw integer (0,1,2)
-# Pick first 10 from X_test (already scaled)
+# Save some test samples to verify in hardware
 with open(os.path.join(weights_dir, 'test_data.mem'), 'w') as f:
     for i in range(10):
         for feat in range(4):
             f.write(to_hex16(X_test[i, feat]) + '\n')
         f.write(f"{y_test[i]:04X}" + '\n')  # label as hex
-print(f"Wrote test_data.mem — 10 samples × 5 lines = 50 lines")
+print("Wrote test_data.mem with 10 samples.")
 
-# ─── 8. SANITY CHECK ───────────────────────────────────────────────────────────
-print("\n--- Sanity check: first 5 test predictions ---")
+# Double check predictions to make sure everything looks right
+print("\nVerifying first 5 test predictions:")
 preds = np.argmax(model.predict(X_test[:5], verbose=0), axis=1)
 for i in range(5):
     status = "OK" if preds[i] == y_test[i] else "MISMATCH"
-    print(f"  Sample {i}: expected={y_test[i]}, predicted={preds[i]}  {status}")
+    print(f"  Sample {i}: expected {y_test[i]}, predicted {preds[i]} ({status})")
 
-print("\n--- Q8 range check ---")
+# Check for Q8 overflows just in case
 all_weights = np.concatenate([W_hidden.flatten(), W_output.flatten(),
                                b_hidden.flatten(), b_output.flatten()])
 max_abs = np.max(np.abs(all_weights))
-print(f"  Max absolute float weight: {max_abs:.4f}")
-print(f"  Max Q8 value: {to_q8(max_abs)} (must be < 32767)")
+print(f"\nMax weight: {max_abs:.4f} (Q8 value: {to_q8(max_abs)})")
 if to_q8(max_abs) < 32767:
-    print("  Q8 range OK — no overflow")
+    print("Everything fits in 16 bits.")
 else:
-    print("  WARNING: Q8 overflow! Some weights clipped.")
+    print("Warning: some values are too large and might be clipped.")
 
-print("\nAll .mem files written successfully. Proceed to TASK3_NEURON.md")
+print("\nDone. All .mem files are ready.")

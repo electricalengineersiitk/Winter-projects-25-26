@@ -1,7 +1,8 @@
 `timescale 1ns / 1ps
 //
 // Hidden Layer — 8 Neurons in Parallel
-// Loads weights/biases from .mem files via $readmemh.
+// This module instantiates 8 neurons in parallel for the hidden layer.
+// It passes weight/bias filenames so each neuron can load its own memory.
 //
 // Interface:
 //   Pulse start=1 for 1 cycle. Then feed data_in for 4 consecutive cycles
@@ -24,8 +25,7 @@ module layer #(
     output wire        valid_layer  // high for 1 cycle when all outputs ready
 );
 
-    // ── Weight & Bias Memory ──────────────────────────────────────────────
-    // Weight layout: neuron_i weights at indices [i*NUM_INPUTS .. i*NUM_INPUTS+3]
+    // Memory for weights and biases
     reg [15:0] weights_mem [0:NUM_NEURONS*NUM_INPUTS-1];  // 32 values
     reg [15:0] biases_mem  [0:NUM_NEURONS-1];             // 8 values
 
@@ -34,9 +34,8 @@ module layer #(
         $readmemh(BIAS_FILE, biases_mem);
     end
 
-    // ── Instantiate 8 Neurons ─────────────────────────────────────────────
-    // Each neuron gets the same data_in, start, last signals.
-    // Each neuron gets its own weight (looked up by neuron index + input_idx).
+    // Generate the 8 neurons.
+    // Each neuron gets a slice of the shared data_in bus.
     wire [7:0] neuron_valid;  // valid signal from each neuron
 
     genvar i;
@@ -56,8 +55,8 @@ module layer #(
         end
     endgenerate
 
-    // All neurons run the same number of cycles, so they all finish together.
-    // Use neuron 0's valid as the layer valid (AND with others for safety).
+    // All neurons receive the same start/last signals and run in lockstep,
+    // so they all finish on the same cycle. Neuron 0's valid is sufficient.
     assign valid_layer = neuron_valid[0];
 
 endmodule

@@ -4,11 +4,19 @@
 // Q8 Fixed-point (16-bit signed)
 //
 // Protocol:
-//   Pulse start=1 on the FIRST input cycle.
-//   Pulse last=1 on the LAST input cycle.
-//   For a single-input neuron, both start=1 and last=1 on the same cycle.
-//   The product on the last cycle IS accumulated.
-//
+
+/*
+ * Basic Neuron: MAC + ReLU
+ *
+ * This performs a Multiply-Accumulate (MAC) over a stream of features.
+ * Once the 'last' signal is pulsed, it applies ReLU and sets 'valid' high.
+ *
+ * Protocol:
+ *   Pulse start=1 on the FIRST input cycle.
+ *   Pulse last=1 on the LAST input cycle.
+ *   For a single-input neuron, both start=1 and last=1 on the same cycle.
+ *   The product on the last cycle IS accumulated.
+ */
 module neuron (
     input  wire        clk,
     input  wire        rst_n,      // active-low reset

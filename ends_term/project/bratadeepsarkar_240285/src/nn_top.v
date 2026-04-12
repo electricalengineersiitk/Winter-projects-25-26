@@ -18,36 +18,28 @@ module nn_top (
     // Internal active-low reset for sub-modules
     wire rst_n = !btn_rst;
 
-    // ══════════════════════════════════════════════════════════════════════
-    // FSM State Encoding
-    // Inference follows: IDLE → FEED_HIDDEN → WAIT_HIDDEN →
-    //                    FEED_OUTPUT → WAIT_OUTPUT → CALC_ARGMAX → IDLE
-    // ══════════════════════════════════════════════════════════════════════
-    localparam S_IDLE        = 3'd0; // Wait for 'start' pulse; pre-fetch first input
-    localparam S_FEED_HIDDEN = 3'd1; // Stream 4 input features to hidden layer neurons
-    localparam S_WAIT_HIDDEN = 3'd2; // Wait for hidden layer 'valid' signal
-    localparam S_FEED_OUTPUT = 3'd3; // Stream 8 hidden activations to output neurons
-    localparam S_WAIT_OUTPUT = 3'd4; // Wait for output layer 'valid' signal
-    localparam S_CALC_ARGMAX = 3'd5; // Register argmax result (dedicated state for timing closure)
-    localparam S_DONE        = 3'd6; // Currently unused; FSM returns directly to S_IDLE
+    // Main FSM
+    // Order of operations: IDLE -> HIDDEN LAYER -> WAIT -> OUTPUT LAYER -> WAIT -> ARGMAX -> DONE
+    localparam S_IDLE        = 3'd0;
+    localparam S_FEED_HIDDEN = 3'd1;
+    localparam S_WAIT_HIDDEN = 3'd2;
+    localparam S_FEED_OUTPUT = 3'd3;
+    localparam S_WAIT_OUTPUT = 3'd4;
+    localparam S_CALC_ARGMAX = 3'd5;
 
     reg [2:0] state;
     reg [3:0] cycle_cnt;   
     reg [3:0] sampled_sw;  // snap switches at start
-    wire [7:0] base_addr = (sampled_sw * 5); // 5 lines per sample (4 feats + 1 label)
+    wire [7:0] base_addr = sampled_sw * 5;
 
-    // ══════════════════════════════════════════════════════════════════════
-    // Test Input Memory (loaded from .mem file)
-    // ══════════════════════════════════════════════════════════════════════
+    // Input data memory (test_data.mem)
     // test_data.mem has 50 lines: 10 samples × (4 inputs + 1 label)
     reg [15:0] test_data_mem [0:49];
     initial begin
         $readmemh("test_data.mem", test_data_mem);
     end
 
-    // ══════════════════════════════════════════════════════════════════════
-    // Hidden Layer (4 → 8)
-    // ══════════════════════════════════════════════════════════════════════
+    // ----- Hidden Layer (4 inputs -> 8 neurons) -----
     reg         h_start;
     reg  [15:0] h_data_in;
     reg  [1:0]  h_input_idx;
@@ -71,11 +63,7 @@ module nn_top (
         .valid_layer (h_valid)
     );
 
-    // ══════════════════════════════════════════════════════════════════════
-    // Latch Hidden Layer Outputs
-    // When the hidden layer asserts 'valid', capture all 8 neuron outputs
-    // into 'hidden_results'. These are fed to the output layer in S_FEED_OUTPUT.
-    // ══════════════════════════════════════════════════════════════════════
+    // Catch hidden layer outputs once they are ready
     reg [15:0] hidden_results [0:7];
     integer k;
     always @(posedge clk) begin
@@ -85,9 +73,7 @@ module nn_top (
         end
     end
 
-    // ══════════════════════════════════════════════════════════════════════
-    // Output Layer (8 → 3)
-    // ══════════════════════════════════════════════════════════════════════
+    // ----- Output Layer (8 inputs -> 3 neurons) -----
     reg [15:0] w_out_mem [0:23];  // 3 neurons × 8 weights
     reg [15:0] b_out_mem [0:2];   // 3 biases
 
@@ -149,11 +135,9 @@ module nn_top (
             done    <= 1'b0;
 
             case (state)
-                // ── S_IDLE ──────────────────────────────────────────────────
-                // Waits for the 'start' pulse. Immediately pre-fetches the first
-                // feature word so h_data_in is valid (after its register stage)
-                // when S_FEED_HIDDEN asserts h_start on the very next cycle.
-                // This avoids a 1-cycle misalignment that caused stale-data bugs.
+                // ----- S_IDLE -----
+                // Wait for the pulse. I'm pre-fetching the first word here 
+                // to avoid a timing mismatch when the FSM starts.
                 S_IDLE: begin
                     if (start) begin
                         sampled_sw  <= sw;              // Snap switch selection
