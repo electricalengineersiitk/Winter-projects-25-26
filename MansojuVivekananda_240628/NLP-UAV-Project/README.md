@@ -1,8 +1,8 @@
 # Natural Language Command & Control for UAVs
 
-**Author:** Mansoju Vivekananda  
+**Name:** Mansoju Vivekananda  
 **Mentors:** Pratyush Srivastava & Akul Agarwal  
-**:** EEA - Electrical Engineers Association, IIT Kanpur  
+**Conducted by:** EEA - Electrical Engineers Association, IIT Kanpur  
 **Project:** NLP-UAV Final Project (Winter 2025-26)
 
 ---
