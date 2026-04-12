@@ -1,0 +1,27 @@
+# Vivado junk
+*.log
+*.jou
+*.str
+*.vbe
+*.vbs
+vivado/.Xil/
+vivado/*/
+vivado/*.runs/
+vivado/*.gen/
+vivado/*.srcs/
+vivado/*.hw/
+vivado/*.ip_user_files/
+vivado/*.cache/
+
+# Simulation junk
+*.vvp
+*.vcd
+iverilog_log.txt
+
+# Python junk
+__pycache__/
+*.pyc
+
+# OS junk
+.DS_Store
+Thumbs.db
