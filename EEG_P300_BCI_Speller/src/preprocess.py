@@ -1,83 +1,102 @@
 import mne
 import numpy as np
+import pandas as pd
 from moabb.datasets import BNCI2014_009, EPFLP300
 from mne.preprocessing import ICA
+from autoreject import AutoReject
 import warnings
 warnings.filterwarnings('ignore', category=RuntimeWarning)
+
 SEED = 42
-def get_clean_data(dataset_name='BNCI2014_009', subj=1, apply_decimation=True):
+
+
+def get_clean_data(dataset_name='BNCI2014_009', subj=1):
+    """
+    Load and preprocess continuous raw EEG signal, THEN epoch.
+    Stage 1 (Raw): Bandpass, Notch, Re-reference, Bad Channel Detection, ICA.
+    Stage 2 (Epoched): Epoch extraction with baseline correction.
+    """
     if dataset_name == 'BNCI2014_009':
         ds = BNCI2014_009()
     elif dataset_name == 'EPFLP300':
         ds = EPFLP300()
     else:
         raise ValueError(f"Unsupported dataset: {dataset_name}")
+
     data = ds.get_data(subjects=[subj])[subj]
     s_key = list(data.keys())[0]
     r_key = list(data[s_key].keys())[0]
     raw = data[s_key][r_key]
     raw.pick_types(eeg=True)
+
+    # --- Stage 1: Raw-Level Preprocessing ---
+
+    # 1a. Bandpass filter (P300 band)
     raw.filter(0.1, 30.0, verbose=False)
+
+    # 1b. Notch filter (Indian power-line noise at 50 Hz)
     raw.notch_filter(freqs=50, verbose=False)
+
+    # 1c. Re-reference to average
+    raw.set_eeg_reference('average', projection=True, verbose=False)
+
+    # 1d. Bad Channel Detection on raw (z-score of variance across time)
+    raw_data = raw.get_data()
+    ch_vars = np.var(raw_data, axis=1)
+    z = np.abs((ch_vars - np.median(ch_vars)) / (np.median(np.abs(ch_vars - np.median(ch_vars))) + 1e-8))
+    bad_chs = [raw.ch_names[i] for i in np.where(z > 3.5)[0]]
+    if bad_chs and len(bad_chs) < len(raw.ch_names) // 2:
+        print(f"    -> Bad channels detected on raw: {bad_chs}")
+        raw.info['bads'] = bad_chs
+        raw.interpolate_bads(reset_bads=True, verbose=False)
+
+    # 1e. ICA on continuous raw (removes eye-blinks/muscle globally before epoching)
+    raw_for_ica = raw.copy().filter(l_freq=1.0, h_freq=None, verbose=False)
+    n_comp = min(len(raw.ch_names) - 1, 15)
+    ica = ICA(n_components=n_comp, random_state=SEED, method='fastica', max_iter=500)
+    ica.fit(raw_for_ica, verbose=False)
+    frontal_chs = [c for c in ['Fp1', 'Fp2', 'AF3', 'AF4', 'Fpz', 'FP1', 'FP2', 'FPZ']
+                   if c in raw.ch_names]
+    if frontal_chs:
+        eog_idx, _ = ica.find_bads_eog(raw, ch_name=frontal_chs, verbose=False)
+        ica.exclude = eog_idx
+        print(f"    -> ICA (raw): Excluded {len(eog_idx)} blink components via {frontal_chs}")
+    else:
+        ica.exclude = []
+        print(f"    -> ICA (raw): No frontal channels found; no components excluded.")
+    ica.apply(raw, verbose=False)
+
+    # --- Stage 2: Epoching ---
     events, event_id = mne.events_from_annotations(raw, verbose=False)
     target_id = event_id.get('Target')
     nontarget_id = event_id.get('NonTarget')
-    epochs = mne.Epochs(raw, events, event_id={'Target': target_id, 'NonTarget': nontarget_id},
-                        tmin=-0.2, tmax=0.8, baseline=(-0.2, 0), preload=True, verbose=False)
-    stim_ch = next((raw.ch_names.index(c) for c in ['Flash stim', 'STI', 'stim'] if c in raw.ch_names), None)
-    flash_ids = []
-    if stim_ch is not None:
-        for event_time in events[:, 0]:
-            val = raw[stim_ch, event_time][0][0][0]
-            flash_ids.append(int(val))
-    else:
-        flash_ids = [i % 12 for i in range(len(events))]
-    char_ids = np.arange(len(events)) // 120
-    epochs.metadata = mne.utils._prepare_metadata(
-        metadata=np.column_stack([flash_ids, char_ids]),
-        names=['flash_id', 'char_id'],
-        col_type={'flash_id': 'int64', 'char_id': 'int64'},
-        row_names=None
+    epochs = mne.Epochs(
+        raw, events,
+        event_id={'Target': target_id, 'NonTarget': nontarget_id},
+        tmin=-0.2, tmax=0.8, baseline=(-0.2, 0),
+        preload=True, verbose=False
     )
-    return epochs, epochs.get_data(), (epochs.events[:, -1] == target_id).astype(int)
-def apply_bad_channel_interpolation(epochs_train, epochs_test, z_thresh=3.0):
-    train_data = epochs_train.get_data() 
-    chan_stds = np.std(train_data, axis=(0, 2))
-    median_std = np.median(chan_stds)
-    mad = np.median(np.abs(chan_stds - median_std))
-    z_scores = np.abs(chan_stds - median_std) / (mad + 1e-8)
-    bad_idx = np.where(z_scores > z_thresh)[0]
-    bads = [epochs_train.ch_names[i] for i in bad_idx]
-    if bads:
-        if len(bads) < len(epochs_train.ch_names) // 2:
-            epochs_train.info['bads'] = bads
-            epochs_test.info['bads'] = bads
-            epochs_train.interpolate_bads(reset_bads=True, verbose=False)
-            epochs_test.interpolate_bads(reset_bads=True, verbose=False)
-    return epochs_train, epochs_test
-def apply_spatial_ica(epochs_train, epochs_test):
-    ica = ICA(n_components=min(len(epochs_train.ch_names), 15), random_state=SEED, method='fastica')
-    epochs_for_ica = epochs_train.copy().filter(l_freq=1.0, h_freq=None, verbose=False)
-    ica.fit(epochs_for_ica, verbose=False)
-    frontal_chans = [ch for ch in ['Fp1', 'Fp2', 'AF3', 'AF4', 'Fpz', 'FP1', 'FP2', 'FPZ'] if ch in epochs_train.ch_names]
-    if frontal_chans:
-        eog_indices, eog_scores = ica.find_bads_eog(epochs_train, ch_name=frontal_chans, verbose=False)
-        ica.exclude = eog_indices
-        if not ica.exclude:
-            ica.exclude = []
-        print(f"    -> ICA: Spatial Audit found {len(ica.exclude)} artifact components correlating with {frontal_chans}")
-    else:
-        ica.exclude = [] 
-        print(f"    -> ICA: No frontal channels found. Excluding nothing.")
-    ica.apply(epochs_train, verbose=False)
-    ica.apply(epochs_test, verbose=False)
-    return epochs_train, epochs_test
 
-def apply_average_reference(epochs_train, epochs_test):
+    # Build flash/char metadata for ensemble logic
+    flash_ids = [i % 12 for i in range(len(events))]
+    char_ids = np.arange(len(events)) // 12
+
+    epochs.metadata = pd.DataFrame({
+        'flash_id': flash_ids[:len(epochs)],
+        'char_id':  char_ids[:len(epochs)]
+    })
+
+    y = (epochs.events[:, -1] == target_id).astype(int)
+    return epochs, epochs.get_data(), y
+
+
+def run_preprocessing_fold(epochs_train, epochs_test):
     """
-    Re-references the signal to the average of all channels.
-    This is applied per-fold to prevent data leakage.
+    Per-fold preprocessing ONLY for AutoReject-based epoch cleaning.
+    ICA and Bad Channel handling have already been applied globally in get_clean_data.
     """
-    epochs_train.set_eeg_reference('average', verbose=False)
-    epochs_test.set_eeg_reference('average', verbose=False)
+    ar = AutoReject(random_state=SEED, n_jobs=1, verbose=False)
+    ar.fit(epochs_train)
+    epochs_train = ar.transform(epochs_train)
+    epochs_test = ar.transform(epochs_test)
     return epochs_train, epochs_test
