@@ -20,22 +20,22 @@ Q8 fixed-point, and the entire inference pipeline runs on an FPGA in Verilog.
 
 ```
 src/
-  neuron.v          Single MAC neuron with ReLU
-  layer.v           Parameterised fully-connected layer
-  nn_top.v          Top-level: hidden layer + output layer + FSM
+  neuron.v             Single MAC neuron with ReLU
+  layer.v              Parameterised fully-connected layer
+  nn_top.v             Top-level: hidden layer + output layer + FSM
 sim/
-  tb_neuron.v       Neuron unit test (self-checking)
-  tb_layer.v        Layer integration test
+  tb_neuron.v          Neuron unit test (self-checking)
+  tb_layer.v           Layer integration test
 weights/
-  weights.mem       Hidden-layer weights (Q8 hex)
-  biases.mem        All biases (hidden then output)
-  test_data.mem     10 test vectors + expected labels
+  weights.mem          Hidden-layer weights (Q8 hex)
+  biases.mem           All biases (hidden then output)
+  test_data.mem        10 test vectors + expected labels
 python/
   train_and_export.py  Trains model, exports all .mem files
 vivado/
-  nn_top.xdc        Pin-assignment and clock constraints
+  nn_top.xdc           Pin-assignment and clock constraints
 docs/
-  report.pdf        2-page project report
+  report.pdf           3-page project report
 README.md
 ```
 
