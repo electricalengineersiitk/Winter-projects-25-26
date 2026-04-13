@@ -3,7 +3,7 @@
 This project simulates a digital multimeter for measuring Resistance (R), Capacitance (C), and Inductance (L) with automatic range selection. The auto-ranging engine selects the correct scale automatically without user input. All three modes achieve accuracy well under 2%.
 
 ## How to set it up
-git clone https://github.com/gourab/Winter-projects-25-26.git
+git clone https://github.com/gouraba/Winter-projects-25-26.git
 cd "Winter-projects-25-26/Smart Multimeter Using Microcontroller Systems/end_term/smart_multimeter"
 pip3 install -r requirements.txt
 python3 simulate.py
