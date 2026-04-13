@@ -1,0 +1,81 @@
+
+clear; clc; close all;
+K = 1; tau = 0.5; dt = 0.01; t = 0:dt:15; N = length(t);
+
+Kp1 = 5;  Ki1 = 50; Kd1 = 0; 
+Kp2 = 10; Ki2 = 30; Kd2 = 0; 
+Kp3 = 20; Ki3 = 5;  Kd3 = 0; 
+
+throttle_breakpoints = [0, 0.20, 0.40, 0.60, 0.80, 1.0];
+Kp_map = [Kp1, Kp1, Kp2, Kp2, Kp3, Kp3];
+Ki_map = [Ki1, Ki1, Ki2, Ki2, Ki3, Ki3];
+
+throttle_cmd = zeros(1, N);
+throttle_cmd(t >= 0 & t < 5)   = 0.20; 
+throttle_cmd(t >= 5 & t < 10)  = 0.50; 
+throttle_cmd(t >= 10 & t <= 15)= 0.85; 
+
+speed = zeros(1, N);
+u_history = zeros(1, N);
+Kp_history = zeros(1, N);
+Ki_history = zeros(1, N);
+smoothed_history = zeros(1, N); 
+
+integral_error = 0; prev_error = 0;
+smoothed_setpoint = 0; 
+max_rate = 0.6; 
+
+for i = 2:N
+    target_throttle = throttle_cmd(i);
+
+    max_step = max_rate * dt;
+    if (target_throttle - smoothed_setpoint) > max_step
+        smoothed_setpoint = smoothed_setpoint + max_step;
+    elseif (target_throttle - smoothed_setpoint) < -max_step
+        smoothed_setpoint = smoothed_setpoint - max_step;
+    else
+        smoothed_setpoint = target_throttle;
+    end
+    
+    smoothed_history(i) = smoothed_setpoint;
+    
+    Kp = interp1(throttle_breakpoints, Kp_map, smoothed_setpoint);
+    Ki = interp1(throttle_breakpoints, Ki_map, smoothed_setpoint);
+    
+    error = smoothed_setpoint - speed(i-1);
+    
+    integral_error = integral_error + (error * dt);
+    derivative_error = (error - prev_error) / dt;
+    u = (Kp * error) + (Ki * integral_error) + 0;
+    
+    dspeed_dt = (K * u - speed(i-1)) / tau;
+    speed(i) = speed(i-1) + (dspeed_dt * dt);
+    prev_error = error;
+    
+    u_history(i) = u; Kp_history(i) = Kp; Ki_history(i) = Ki;
+end
+
+figure(3); set(gcf, 'Position', [100, 100, 800, 600]);
+
+subplot(3, 1, 1);
+plot(t, smoothed_history, 'y--', 'LineWidth', 2); hold on; 
+plot(t, speed, 'c-', 'LineWidth', 2); 
+xline(5, 'r--'); xline(10, 'r--');
+title('Gain-Scheduled Motor Response with Rate Limiter');
+ylabel('Speed'); legend('Smoothed Command', 'Motor Speed', 'Location', 'SouthEast'); grid on;
+
+subplot(3, 1, 2);
+plot(t, u_history, 'm-', 'LineWidth', 2);
+xline(5, 'r--'); xline(10, 'r--');
+ylabel('Control (u)'); grid on;
+
+subplot(3, 1, 3);
+plot(t, Kp_history, 'r-', 'LineWidth', 1.5); hold on;
+plot(t, Ki_history, 'b-', 'LineWidth', 1.5);
+xline(5, 'r--'); xline(10, 'r--');
+xlabel('Time (seconds)'); ylabel('Gains'); legend('Kp', 'Ki'); grid on;
+
+if ~exist('results', 'dir'), mkdir('results'); end
+saveas(gcf, 'results/gainscheduled_response.png');
+disp('Phase 4 Complete: No more spikes!');
+shg;
