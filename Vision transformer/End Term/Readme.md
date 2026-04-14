@@ -1,1 +1,1 @@
-This folder has all the submissions made by each mentee
+This repo contains all submission files of each mentee
