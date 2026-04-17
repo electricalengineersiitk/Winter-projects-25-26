@@ -1,0 +1,16 @@
+{
+  "seed": 7,
+  "meta_iterations": 250,
+  "meta_batch_size": 8,
+  "train_shots": 10,
+  "inner_steps": 5,
+  "inner_lr": 0.01,
+  "meta_lr": 0.12,
+  "maml_meta_lr": 0.003,
+  "hidden_dim": 64,
+  "baseline_steps": 200,
+  "baseline_lr": 0.01,
+  "eval_seed": 11,
+  "final_reptile_query_loss": 0.6398976817727089,
+  "final_maml_query_loss": 0.451747577637434
+}
