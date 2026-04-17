@@ -1,8 +1,7 @@
 # Natural Language Command & Control for UAVs
 
-Name: Marut Garg
-
-Roll No: 240633
+Name: Marut Garg  
+Roll No: 240633  
 
 ---
 
@@ -28,12 +27,18 @@ Each module plays a specific role in converting human intent into safe and execu
 
 The system is divided into the following main components:
 
-Command Input
-Command Interpretation (LLM / rule-based parsing)
-Geometry-based Trajectory Generator
-Safety Checker (constraint validation layer)
-Drone Controller (DroneKit interface)
-ArduPilot SITL (simulation environment)
+Command Input  
+
+Command Interpretation (LLM / rule-based parsing)  
+
+Geometry-based Trajectory Generator  
+
+Safety Checker (constraint validation layer)  
+
+Drone Controller (DroneKit interface)  
+
+ArduPilot SITL (simulation environment)  
+
 All modules are integrated together in a single controller script to form a complete working system.
 
 ---
@@ -44,14 +49,19 @@ This module generates mathematical waypoint paths based on the command.
 
 Implemented trajectories:
 
-Circle → evenly spaced points forming a closed loop
-Helix → circular motion with increasing altitude
-Orbit → circle around a fixed point (pole)
-Scan (Lawnmower pattern) → area coverage path
+Circle → evenly spaced points forming a closed loop  
+
+Helix → circular motion with increasing altitude  
+
+Orbit → circle around a fixed point (pole)  
+
+Scan (Lawnmower pattern) → area coverage path  
+
 Key idea: All trajectories are deterministic and based on simple trigonometry (sin, cos) and geometry.
 
-Example: Circle points are generated using: north = center_n + r * cos(theta)
-east = center_e + r * sin(theta)
+Example: Circle points are generated using:  
+north = center_n + r * cos(theta)  
+east = center_e + r * sin(theta)  
 
 This ensures smooth and predictable motion.
 
@@ -61,17 +71,21 @@ This ensures smooth and predictable motion.
 
 This section shows the generated trajectories used by the drone for different commands.
 
-Circle Trajectory
-Circle
+Circle Trajectory  
 
-Helix Trajectory
-Helix
+Circle  
 
-Orbit Around Pole
-Orbit
+Helix Trajectory  
 
-Scan Pattern (Lawnmower)
-Scan
+Helix  
+
+Orbit Around Pole  
+
+Orbit  
+
+Scan Pattern (Lawnmower)  
+
+Scan  
 
 ---
 
@@ -81,9 +95,12 @@ The system interprets user input and maps it to trajectory functions.
 
 Examples:
 
-"Fly a 5 m square and come back" → square waypoints
-"Go around the pole" → orbit trajectory
-"Fly north 10 meters" → linear path
+"Fly a 5 m square and come back" → square waypoints  
+
+"Go around the pole" → orbit trajectory  
+
+"Fly north 10 meters" → linear path  
+
 The commands are converted into structured waypoint dictionaries:
 
 { "north": value, "east": value, "alt": value }
@@ -98,15 +115,22 @@ A critical part of the system is the safety validation layer.
 
 Rules enforced:
 
-Minimum altitude: ≥ 2 meters
-Maximum altitude: ≤ 50 meters
-Maximum range: ≤ 100 meters from home
-Obstacle avoidance: ≥ 2 meters away
-Return condition: final waypoint must be near home
+Minimum altitude: ≥ 2 meters  
+
+Maximum altitude: ≤ 50 meters  
+
+Maximum range: ≤ 100 meters from home  
+
+Obstacle avoidance: ≥ 2 meters away  
+
+Return condition: final waypoint must be near home  
+
 If any rule is violated:
 
-The mission is rejected
-A reason is returned
+The mission is rejected  
+
+A reason is returned  
+
 This ensures that unsafe commands never reach the drone.
 
 ---
@@ -117,12 +141,18 @@ The drone is controlled using DroneKit API.
 
 Key operations:
 
-Connect to SITL
-Set mode to GUIDED
-Arm the drone
-Takeoff to desired altitude
-Move through waypoints using simple_goto()
-Return to launch (RTL)
+Connect to SITL  
+
+Set mode to GUIDED  
+
+Arm the drone  
+
+Takeoff to desired altitude  
+
+Move through waypoints using simple_goto()  
+
+Return to launch (RTL)  
+
 The drone follows the generated path step-by-step.
 
 ---
@@ -133,33 +163,37 @@ ArduPilot SITL is used to simulate the drone.
 
 Features:
 
-Realistic flight behavior
-GPS simulation
-MAVLink communication
-Visual map + console
+Realistic flight behavior  
+
+GPS simulation  
+
+MAVLink communication  
+
+Visual map + console  
+
 This allows testing without real hardware.
 
 ---
 
 ## 10. File Description
 
-connect_test.py
-→ Tests connection between Python and SITL
+connect_test.py  
+→ Tests connection between Python and SITL  
 
-waypoint_nav.py
-→ Implements basic square waypoint navigation
+waypoint_nav.py  
+→ Implements basic square waypoint navigation  
 
-llm_waypoints.py
-→ Converts natural language commands into waypoint structures
+llm_waypoints.py  
+→ Converts natural language commands into waypoint structures  
 
-geometry_utils.py
-→ Generates trajectories (circle, helix, orbit, scan)
+geometry_utils.py  
+→ Generates trajectories (circle, helix, orbit, scan)  
 
-safety_checker.py
-→ Validates waypoint safety rules
+safety_checker.py  
+→ Validates waypoint safety rules  
 
-main_controller.py
-→ Integrates all components into a full pipeline
+main_controller.py  
+→ Integrates all components into a full pipeline  
 
 ---
 
@@ -167,27 +201,27 @@ main_controller.py
 
 This section demonstrates the working of the system for different commands executed in ArduPilot SITL.
 
-1. Square Trajectory
-Command: Fly a 5 m square and come back
+1. Square Trajectory  
+Command: Fly a 5 m square and come back  
 
-Demo: https://drive.google.com/file/d/186i-4Hxt1fhnCxK9kHZ9CgcBkSEOSwJV/view?usp=drive_link
+Demo: https://drive.google.com/file/d/186i-4Hxt1fhnCxK9kHZ9CgcBkSEOSwJV/view?usp=drive_link  
 
-2. Orbit / Circle (Primary Use Case)
-Command: Go around the pole and come back
+2. Orbit / Circle (Primary Use Case)  
+Command: Go around the pole and come back  
 
-Demo: https://drive.google.com/file/d/1XwrryyWaTZLi4y6tPfLdjackLpz7a1m4/view?usp=drive_link
+Demo: https://drive.google.com/file/d/1XwrryyWaTZLi4y6tPfLdjackLpz7a1m4/view?usp=drive_link  
 
-3. Straight Line Movement
-Command: Fly north 10 meters then hover
+3. Straight Line Movement  
+Command: Fly north 10 meters then hover  
 
-Demo: https://drive.google.com/file/d/1H8nNJ05UQw9P3sQx-rnwY66aWv-t9B4z/view?usp=drive_link
+Demo: https://drive.google.com/file/d/1H8nNJ05UQw9P3sQx-rnwY66aWv-t9B4z/view?usp=drive_link  
 
-4. Safety Check (Invalid Command)
-Command: Fly at ground level
+4. Safety Check (Invalid Command)  
+Command: Fly at ground level  
 
-Result: Mission rejected due to safety constraints
+Result: Mission rejected due to safety constraints  
 
-Demo: https://drive.google.com/file/d/1vMyg6is4vnZoZ0-OviaY9c5LgXlHakwQ/view?usp=drive_link
+Demo: https://drive.google.com/file/d/1vMyg6is4vnZoZ0-OviaY9c5LgXlHakwQ/view?usp=drive_link  
 
 All demonstrations were performed using ArduPilot SITL. The videos show successful execution of valid commands and proper rejection of unsafe commands by the safety layer.
 
@@ -195,14 +229,21 @@ All demonstrations were performed using ArduPilot SITL. The videos show successf
 
 ## 12. Prerequisites
 
-Ubuntu / WSL (recommended)
-Python 3.8+
-ArduPilot SITL
-MAVProxy
-DroneKit
-pymavlink
-numpy
-matplotlib
+Ubuntu / WSL (recommended)  
+
+Python 3.8+  
+
+ArduPilot SITL  
+
+MAVProxy  
+
+DroneKit  
+
+pymavlink  
+
+numpy  
+
+matplotlib  
 
 ---
 
@@ -210,33 +251,37 @@ matplotlib
 
 Clone the repository:
 
-git clone
-cd NLP-UAV-Project
+git clone  
+
+cd NLP-UAV-Project  
 
 Install dependencies:
 
-pip install -r requirements.txt
+pip install -r requirements.txt  
 
 ---
 
 ## 14. How to Run
 
-Step 1: Start SITL
+Step 1: Start SITL  
 
-sim_vehicle.py -v ArduCopter --console --map --out=127.0.0.1:14550
+sim_vehicle.py -v ArduCopter --console --map --out=127.0.0.1:14550  
 
-Step 2: Run the controller
+Step 2: Run the controller  
 
-python main_controller.py
+python main_controller.py  
 
 ---
 
 ## 15. Example Commands
 
-Fly a 5 m square and come back
-Go around the pole and come back
-Fly north 10 meters then hover
-Fly at ground level
+Fly a 5 m square and come back  
+
+Go around the pole and come back  
+
+Fly north 10 meters then hover  
+
+Fly at ground level  
 
 ---
 
@@ -244,10 +289,14 @@ Fly at ground level
 
 The system successfully:
 
-Interprets natural language commands
-Generates accurate trajectories
-Validates safety constraints
-Executes missions in SITL
+Interprets natural language commands  
+
+Generates accurate trajectories  
+
+Validates safety constraints  
+
+Executes missions in SITL  
+
 All core functionalities worked as expected.
 
 ---
@@ -260,30 +309,41 @@ Through this project, I learned how high-level natural language commands can be 
 
 ## 18. Challenges Faced
 
-Setting up SITL and DroneKit connection
-Handling GPS initialization delays
-Debugging waypoint movement inaccuracies
-Managing repeated simulation runs
-Ensuring safety rules were correctly enforced
+Setting up SITL and DroneKit connection  
+
+Handling GPS initialization delays  
+
+Debugging waypoint movement inaccuracies  
+
+Managing repeated simulation runs  
+
+Ensuring safety rules were correctly enforced  
 
 ---
 
 ## 19. Limitations
 
-Works only in simulation (SITL)
-Uses simple command parsing (limited NLP capability)
-Path accuracy depends on simple_goto()
-No real-world obstacle detection
+Works only in simulation (SITL)  
+
+Uses simple command parsing (limited NLP capability)  
+
+Path accuracy depends on simple_goto()  
+
+No real-world obstacle detection  
 
 ---
 
 ## 20. Future Improvements
 
-Integrate advanced LLM for better command understanding
-Add real-time obstacle detection
-Improve path tracking accuracy
-Extend to real drone hardware
-Support more complex commands
+Integrate advanced LLM for better command understanding  
+
+Add real-time obstacle detection  
+
+Improve path tracking accuracy  
+
+Extend to real drone hardware  
+
+Support more complex commands  
 
 ---
 
