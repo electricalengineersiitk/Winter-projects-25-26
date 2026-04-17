@@ -1,0 +1,12 @@
+{
+  "seed": 42,
+  "train_tasks": 100,
+  "test_tasks": 20,
+  "support_size": 20,
+  "query_size": 100,
+  "input_dim": 16,
+  "channel_dim": 12,
+  "latent_dim": 4,
+  "dataset_path": "channel_estimation_tasks.npz",
+  "description": "Synthetic channel estimation tasks with task-specific pilot/channel mappings, variable SNR, path counts, and observation noise."
+}
