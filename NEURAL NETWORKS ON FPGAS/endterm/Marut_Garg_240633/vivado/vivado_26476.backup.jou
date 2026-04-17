@@ -1,0 +1,53 @@
+#-----------------------------------------------------------
+# Vivado v2025.2 (64-bit)
+# SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+# IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+# SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+# Start of session at: Fri Apr 10 01:46:58 2026
+# Process ID         : 26476
+# Current directory  : C:/Vivado Projects/nn_project
+# Command line       : vivado.exe -gui_launcher_event rodinguilauncherevent9368 C:\Vivado Projects\nn_project\nn_project.xpr
+# Log file           : C:/Vivado Projects/nn_project/vivado.log
+# Journal file       : C:/Vivado Projects/nn_project\vivado.jou
+# Running On         : LAPTOP-M0HQRN51
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26200
+# Processor Detail   : 13th Gen Intel(R) Core(TM) i5-13420H
+# CPU Frequency      : 2611 MHz
+# CPU Physical cores : 8
+# CPU Logical cores  : 12
+# Host memory        : 16802 MB
+# Swap memory        : 13958 MB
+# Total Virtual      : 30761 MB
+# Available Virtual  : 7494 MB
+#-----------------------------------------------------------
+start_gui
+open_project {C:/Vivado Projects/nn_project/nn_project.xpr}
+update_compile_order -fileset sources_1
+launch_runs synth_1 -jobs 6
+wait_on_run synth_1
+launch_runs impl_1 -jobs 6
+wait_on_run impl_1
+launch_runs impl_1 -to_step write_bitstream -jobs 6
+wait_on_run impl_1
+set_property SEVERITY {Warning} [get_drc_checks NSTD-1]
+set_property SEVERITY {Warning} [get_drc_checks UCIO-1]
+reset_run impl_1 -prev_step 
+launch_runs impl_1 -to_step write_bitstream -jobs 6
+wait_on_run impl_1
+set_property SEVERITY Warning [get_drc_checks NSTD-1]
+set_property SEVERITY Warning [get_drc_checks UCIO-1]
+reset_run impl_1
+launch_runs impl_1 -jobs 6
+wait_on_run impl_1
+launch_runs impl_1 -to_step write_bitstream -jobs 6
+wait_on_run impl_1
+set_property SEVERITY Warning [get_drc_checks NSTD-1]
+set_property SEVERITY Warning [get_drc_checks UCIO-1]
+set_property SEVERITY Warning [get_drc_checks RTSTAT-1]
+reset_run impl_1
+launch_runs impl_1
+launch_runs impl_1 -to_step write_bitstream -jobs 6
+wait_on_run impl_1
+write_bitstream -force
+write_bitstream -force nn_top.bit
