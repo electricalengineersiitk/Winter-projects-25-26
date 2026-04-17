@@ -61,16 +61,21 @@ This ensures smooth and predictable motion.
 
 ## 5. Trajectory Visualizations
 
+## 5. Trajectory Visualizations
+
 This section shows the generated trajectories used by the drone for different commands.
 
-Circle Trajectory  
-Circle  
-Helix Trajectory  
-Helix  
-Orbit Around Pole  
-Orbit  
-Scan Pattern (Lawnmower)  
-Scan  
+### Circle Trajectory
+![Circle](circle.png)
+
+### Helix Trajectory
+![Helix](helix.png)
+
+### Orbit Around Pole
+![Orbit](orbit.png)
+
+### Scan Pattern (Lawnmower)
+![Scan](scan.png)
 
 ---
 
