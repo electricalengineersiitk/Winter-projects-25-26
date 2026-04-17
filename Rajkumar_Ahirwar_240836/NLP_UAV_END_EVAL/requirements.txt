@@ -1,4 +1,0 @@
-dronekit
-openai
-python-dotenv
-matplotlib

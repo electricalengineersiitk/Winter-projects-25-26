@@ -1,0 +1,289 @@
+
+*** Running vivado
+    with args -log nn_top.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source nn_top.tcl
+
+
+
+****** Vivado v2025.2 (64-bit)
+  **** SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+  **** IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+  **** SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+  **** Start of session at: Fri Apr 10 01:47:40 2026
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source nn_top.tcl -notrace
+create_project: Time (s): cpu = 00:00:08 ; elapsed = 00:00:06 . Memory (MB): peak = 526.207 ; gain = 221.359
+Command: synth_design -top nn_top -part xc7a200tfbg676-2
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a200t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a200t'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 32920
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 1066.922 ; gain = 537.695
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'nn_top' [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/nn_top.v:1]
+INFO: [Synth 8-6157] synthesizing module 'layer' [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/layer.v:1]
+CRITICAL WARNING: [Synth 8-4445] could not open $readmem data file 'weights.mem'; please make sure the file is added to project and has read permission, ignoring [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/layer.v:21]
+INFO: [Synth 8-6157] synthesizing module 'neuron' [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/neuron.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'neuron' (0#1) [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/neuron.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'layer' (0#1) [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/layer.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'nn_top' (0#1) [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/nn_top.v:1]
+WARNING: [Synth 8-3848] Net weight_mem[0] in module/entity layer does not have driver. [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/layer.v:18]
+WARNING: [Synth 8-3848] Net weight_mem[1] in module/entity layer does not have driver. [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/layer.v:18]
+WARNING: [Synth 8-3848] Net weight_mem[2] in module/entity layer does not have driver. [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/layer.v:18]
+WARNING: [Synth 8-3848] Net weight_mem[3] in module/entity layer does not have driver. [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/layer.v:18]
+WARNING: [Synth 8-3848] Net weight_mem[4] in module/entity layer does not have driver. [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/layer.v:18]
+WARNING: [Synth 8-3848] Net weight_mem[5] in module/entity layer does not have driver. [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/layer.v:18]
+WARNING: [Synth 8-3848] Net weight_mem[6] in module/entity layer does not have driver. [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/layer.v:18]
+WARNING: [Synth 8-3848] Net weight_mem[7] in module/entity layer does not have driver. [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/layer.v:18]
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:05 ; elapsed = 00:00:07 . Memory (MB): peak = 1184.363 ; gain = 655.137
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1184.363 ; gain = 655.137
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a200tfbg676-2
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xc7a200tfbg676-2
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1184.363 ; gain = 655.137
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:06 ; elapsed = 00:00:08 . Memory (MB): peak = 1184.363 ; gain = 655.137
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Registers : 
+	               16 Bit    Registers := 8     
+	                1 Bit    Registers := 8     
++---Muxes : 
+	   2 Input   32 Bit        Muxes := 8     
+	   2 Input   16 Bit        Muxes := 8     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 740 (col length:100)
+BRAMs: 730 (col length: RAMB18 100 RAMB36 50)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+DSP Report: Generating DSP u_layer/n0/acc0, operation Mode is: C+A*B.
+DSP Report: operator u_layer/n0/acc0 is absorbed into DSP u_layer/n0/acc0.
+DSP Report: operator u_layer/n0/acc1 is absorbed into DSP u_layer/n0/acc0.
+DSP Report: Generating DSP u_layer/n1/acc0, operation Mode is: C+A*B.
+DSP Report: operator u_layer/n1/acc0 is absorbed into DSP u_layer/n1/acc0.
+DSP Report: operator u_layer/n1/acc1 is absorbed into DSP u_layer/n1/acc0.
+DSP Report: Generating DSP u_layer/n2/acc0, operation Mode is: C+A*B.
+DSP Report: operator u_layer/n2/acc0 is absorbed into DSP u_layer/n2/acc0.
+DSP Report: operator u_layer/n2/acc1 is absorbed into DSP u_layer/n2/acc0.
+DSP Report: Generating DSP u_layer/n3/acc0, operation Mode is: C+A*B.
+DSP Report: operator u_layer/n3/acc0 is absorbed into DSP u_layer/n3/acc0.
+DSP Report: operator u_layer/n3/acc1 is absorbed into DSP u_layer/n3/acc0.
+DSP Report: Generating DSP u_layer/n4/acc0, operation Mode is: C+A*B.
+DSP Report: operator u_layer/n4/acc0 is absorbed into DSP u_layer/n4/acc0.
+DSP Report: operator u_layer/n4/acc1 is absorbed into DSP u_layer/n4/acc0.
+DSP Report: Generating DSP u_layer/n5/acc0, operation Mode is: C+A*B.
+DSP Report: operator u_layer/n5/acc0 is absorbed into DSP u_layer/n5/acc0.
+DSP Report: operator u_layer/n5/acc1 is absorbed into DSP u_layer/n5/acc0.
+DSP Report: Generating DSP u_layer/n6/acc0, operation Mode is: C+A*B.
+DSP Report: operator u_layer/n6/acc0 is absorbed into DSP u_layer/n6/acc0.
+DSP Report: operator u_layer/n6/acc1 is absorbed into DSP u_layer/n6/acc0.
+DSP Report: Generating DSP u_layer/n7/acc0, operation Mode is: C+A*B.
+DSP Report: operator u_layer/n7/acc0 is absorbed into DSP u_layer/n7/acc0.
+DSP Report: operator u_layer/n7/acc1 is absorbed into DSP u_layer/n7/acc0.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:12 ; elapsed = 00:00:34 . Memory (MB): peak = 1406.219 ; gain = 876.992
+---------------------------------------------------------------------------------
+ Sort Area is  u_layer/n0/acc0_0 : 0 0 : 2041 2041 : Used 1 time 0
+ Sort Area is  u_layer/n1/acc0_2 : 0 0 : 2041 2041 : Used 1 time 0
+ Sort Area is  u_layer/n2/acc0_3 : 0 0 : 2041 2041 : Used 1 time 0
+ Sort Area is  u_layer/n3/acc0_4 : 0 0 : 2041 2041 : Used 1 time 0
+ Sort Area is  u_layer/n4/acc0_5 : 0 0 : 2041 2041 : Used 1 time 0
+ Sort Area is  u_layer/n5/acc0_6 : 0 0 : 2041 2041 : Used 1 time 0
+ Sort Area is  u_layer/n6/acc0_7 : 0 0 : 2041 2041 : Used 1 time 0
+ Sort Area is  u_layer/n7/acc0_8 : 0 0 : 2041 2041 : Used 1 time 0
+---------------------------------------------------------------------------------
+Start ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+
+DSP: Preliminary Mapping Report (see note below. The ' indicates corresponding REG is set)
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name | DSP Mapping | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|neuron      | C+A*B       | 16     | 16     | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|neuron      | C+A*B       | 16     | 16     | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|neuron      | C+A*B       | 16     | 16     | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|neuron      | C+A*B       | 16     | 16     | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|neuron      | C+A*B       | 16     | 16     | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|neuron      | C+A*B       | 16     | 16     | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|neuron      | C+A*B       | 16     | 16     | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|neuron      | C+A*B       | 16     | 16     | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+Note: The table above is a preliminary report that shows the DSPs inferred at the current stage of the synthesis flow. Some DSP may be reimplemented as non DSP primitives later in the synthesis flow. Multiple instantiated DSPs are reported only once.
+---------------------------------------------------------------------------------
+Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:12 ; elapsed = 00:00:35 . Memory (MB): peak = 1422.008 ; gain = 892.781
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+INFO: [Synth 8-4765] Removing register instance (\u_layer/n6/valid_reg ) from module (nn_top) as it is equivalent to (\u_layer/n7/valid_reg ) and driving same net [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/neuron.v:19]
+INFO: [Synth 8-4765] Removing register instance (\u_layer/n4/valid_reg ) from module (nn_top) as it is equivalent to (\u_layer/n7/valid_reg ) and driving same net [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/neuron.v:19]
+INFO: [Synth 8-4765] Removing register instance (\u_layer/n2/valid_reg ) from module (nn_top) as it is equivalent to (\u_layer/n7/valid_reg ) and driving same net [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/neuron.v:19]
+INFO: [Synth 8-4765] Removing register instance (\u_layer/n0/valid_reg ) from module (nn_top) as it is equivalent to (\u_layer/n7/valid_reg ) and driving same net [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/neuron.v:19]
+INFO: [Synth 8-4765] Removing register instance (\u_layer/n1/valid_reg ) from module (nn_top) as it is equivalent to (\u_layer/n7/valid_reg ) and driving same net [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/neuron.v:19]
+INFO: [Synth 8-4765] Removing register instance (\u_layer/n3/valid_reg ) from module (nn_top) as it is equivalent to (\u_layer/n7/valid_reg ) and driving same net [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/neuron.v:19]
+INFO: [Synth 8-4765] Removing register instance (\u_layer/n5/valid_reg ) from module (nn_top) as it is equivalent to (\u_layer/n7/valid_reg ) and driving same net [C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/neuron.v:19]
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:12 ; elapsed = 00:00:35 . Memory (MB): peak = 1422.008 ; gain = 892.781
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:17 ; elapsed = 00:00:40 . Memory (MB): peak = 1659.977 ; gain = 1130.750
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:17 ; elapsed = 00:00:40 . Memory (MB): peak = 1659.977 ; gain = 1130.750
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:17 ; elapsed = 00:00:40 . Memory (MB): peak = 1659.977 ; gain = 1130.750
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:17 ; elapsed = 00:00:40 . Memory (MB): peak = 1659.977 ; gain = 1130.750
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:17 ; elapsed = 00:00:40 . Memory (MB): peak = 1659.977 ; gain = 1130.750
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:17 ; elapsed = 00:00:40 . Memory (MB): peak = 1659.977 ; gain = 1130.750
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+DSP Final Report (the ' indicates corresponding REG is set)
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|Module Name | DSP Mapping | A Size | B Size | C Size | D Size | P Size | AREG | BREG | CREG | DREG | ADREG | MREG | PREG | 
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+|neuron      | C+A*B       | 16     | 0      | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|neuron      | C+A*B       | 16     | 0      | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|neuron      | C+A*B       | 16     | 0      | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|neuron      | C+A*B       | 16     | 0      | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|neuron      | C+A*B       | 16     | 0      | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|neuron      | C+A*B       | 16     | 0      | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|neuron      | C+A*B       | 16     | 0      | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
+|neuron      | C+A*B       | 16     | 0      | 32     | -      | 32     | 0    | 0    | 0    | -    | -     | 0    | 0    | 
++------------+-------------+--------+--------+--------+--------+--------+------+------+------+------+-------+------+------+
+
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+--------+------+
+|      |Cell    |Count |
++------+--------+------+
+|1     |BUFG    |     1|
+|2     |DSP48E1 |     8|
+|3     |LUT1    |     2|
+|4     |LUT2    |   384|
+|5     |FDCE    |   385|
+|6     |IBUF    |    20|
+|7     |OBUF    |   129|
++------+--------+------+
+
+Report Instance Areas: 
++------+----------+---------+------+
+|      |Instance  |Module   |Cells |
++------+----------+---------+------+
+|1     |top       |         |   929|
+|2     |  u_layer |layer    |   779|
+|3     |    n0    |neuron   |    97|
+|4     |    n1    |neuron_0 |    97|
+|5     |    n2    |neuron_1 |    97|
+|6     |    n3    |neuron_2 |    97|
+|7     |    n4    |neuron_3 |    97|
+|8     |    n5    |neuron_4 |    97|
+|9     |    n6    |neuron_5 |    97|
+|10    |    n7    |neuron_6 |   100|
++------+----------+---------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:17 ; elapsed = 00:00:40 . Memory (MB): peak = 1659.977 ; gain = 1130.750
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 1 critical warnings and 8 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:17 ; elapsed = 00:00:40 . Memory (MB): peak = 1659.977 ; gain = 1130.750
+Synthesis Optimization Complete : Time (s): cpu = 00:00:17 ; elapsed = 00:00:40 . Memory (MB): peak = 1659.977 ; gain = 1130.750
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.011 . Memory (MB): peak = 1673.070 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 8 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1796.188 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete | Checksum: 5b91b092
+INFO: [Common 17-83] Releasing license: Synthesis
+25 Infos, 8 Warnings, 1 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:21 ; elapsed = 00:00:46 . Memory (MB): peak = 1796.188 ; gain = 1269.980
+INFO: [runtcl-6] Synthesis results are not added to the cache due to CRITICAL_WARNING
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.005 . Memory (MB): peak = 1796.188 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/Vivado Projects/nn_project/nn_project.runs/synth_1/nn_top.dcp' has been generated.
+INFO: [Vivado 12-24828] Executing command : report_utilization -file nn_top_utilization_synth.rpt -pb nn_top_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Fri Apr 10 01:48:35 2026...
