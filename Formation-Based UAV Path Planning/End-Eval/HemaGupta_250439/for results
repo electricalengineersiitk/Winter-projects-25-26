@@ -1,0 +1,4 @@
+from IPython.display import Image, display
+display(Image("/content/end_term/results/path_plot.png"))
+display(Image("/content/end_term/results/trajectory_comparison.png"))
+display(Image("/content/end_term/results/formation_animation.gif"))
