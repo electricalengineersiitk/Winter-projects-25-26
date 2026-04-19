@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="layer_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="layer_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="175.001 ns"></ZoomEndTime>
+      <Cursor1Time time="169.733 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="136"></NameColumnWidth>
+      <ValueColumnWidth column_width="222"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="13" />
+   <wvobject fp_name="/layer_tb/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/layer_tb/rst_n" type="logic">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/layer_tb/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/layer_tb/data_in" type="array">
+      <obj_property name="ElementShortName">data_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/layer_tb/weight_n" type="array">
+      <obj_property name="ElementShortName">weight_n[1:8][15:0]</obj_property>
+      <obj_property name="ObjectShortName">weight_n[1:8][15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/layer_tb/bias" type="array">
+      <obj_property name="ElementShortName">bias[1:8][15:0]</obj_property>
+      <obj_property name="ObjectShortName">bias[1:8][15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/layer_tb/last" type="logic">
+      <obj_property name="ElementShortName">last</obj_property>
+      <obj_property name="ObjectShortName">last</obj_property>
+   </wvobject>
+   <wvobject fp_name="/layer_tb/out" type="array">
+      <obj_property name="ElementShortName">out[1:8][15:0]</obj_property>
+      <obj_property name="ObjectShortName">out[1:8][15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/layer_tb/valid" type="array">
+      <obj_property name="ElementShortName">valid[1:8]</obj_property>
+      <obj_property name="ObjectShortName">valid[1:8]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/layer_tb/w_mem" type="array">
+      <obj_property name="ElementShortName">w_mem[0:31][15:0]</obj_property>
+      <obj_property name="ObjectShortName">w_mem[0:31][15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/layer_tb/test_inputs" type="array">
+      <obj_property name="ElementShortName">test_inputs[0:3][15:0]</obj_property>
+      <obj_property name="ObjectShortName">test_inputs[0:3][15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/layer_tb/biasm" type="array">
+      <obj_property name="ElementShortName">biasm[0:7][15:0]</obj_property>
+      <obj_property name="ObjectShortName">biasm[0:7][15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/layer_tb/i" type="array">
+      <obj_property name="ElementShortName">i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">i[31:0]</obj_property>
+   </wvobject>
+</wave_config>

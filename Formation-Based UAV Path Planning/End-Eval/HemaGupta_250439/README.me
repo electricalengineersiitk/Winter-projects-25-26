@@ -1,0 +1,112 @@
+What did I buid?
+
+This project implements a formation-based UAV path planning simulation where multiple drones navigate from a start point to a goal while maintaining a fixed formation.
+
+I use A* algoritm for collision free path plannning. A total of 5 UAV are arranged in V shape form,and they succesfully avoid a central obstacle while preserving formation structure.
+
+Two trajectory types are generated and compared:
+
+Minimum-time trajectory (fast but aggressive)
+Minimum-energy trajectory (smooth and efficient)
+Set Up
+
+Clone the repository and install dependencies:
+
+git clone https://github.com/hema-gupta/End-term-evaluation-UAV.git cd End-term-evaluation-UAV/end_term pip install -r requirements.txt
+
+HOW TO RUN
+
+Run the simulation using:
+
+python simulate.py
+
+What happens when you run it?
+
+A path is planned around the obstacle using A*.
+
+Two trajectories (min-time and min-energy) are generated
+
+Plots are automatically saved in the results/ folder:
+
+1.Path visualization
+
+2.Speed and acceleration comparison
+
+A GIF animation is created showing UAVs flying in formation
+
+The terminal prints basic performance metrics (average speed)
+
+WHAT EACH SCRIPT DOES ??
+
+map_setup.py — Defines the 2D grid environment, obstacle, start, and goal.
+
+path_planner.py — Implements the A* algorithm to compute a collision-free path.
+
+trajectory.py — Generates smooth minimum-time and minimum-energy trajectories using cubic splines.
+
+formation.py — Defines the V-shaped UAV formation and relative offsets.
+
+simulate.py — Runs the full pipeline: planning, trajectory generation, plotting, and animation.
+
+utils.py — Contains helper functions such as distance calculations, normalization, and common math utilities used across modules.
+
+config.py — Stores configurable parameters like grid size, UAV speed limits, obstacle size, and simulation settings for easy modification.
+
+visualization.py — Handles plotting functions separately (path plots, trajectory graphs, and animation setup) to keep simulate.py clean.
+
+metrics.py — Computes performance metrics such as total path length, average speed, energy consumption, and smoothness of trajectory.
+
+RESULT
+
+Path Planning Result:
+This plot shows:
+
+Start and goal positions
+
+Circular obstacle
+
+Planned path avoiding the obstacle
+
+Trajectory Comparison
+Observations:
+
+The minimum-time trajectory reaches the goal faster due to higher velocity, but exhibits sharper acceleration changes.
+
+The minimum-energy trajectory is smoother with lower acceleration, making it more efficient and realistic for UAV motion.
+
+There is a clear trade-off between speed and energy efficiency.
+
+Formation Animation
+The animation shows all UAVs moving together while maintaining formation.
+
+Formation remains rigid throughout the motion
+
+All drones successfully avoid the obstacle
+
+Motion is smooth and synchronized
+
+Formation Details
+
+Formation Shape: V-shape
+
+Number of UAVs (N): 5
+
+Formation Offsets:
+
+Each UAV maintains a fixed offset relative to the formation centroid:
+
+(-2, 0), (-1, -1), (0, 0), (1, -1), (2, 0)
+
+How it works:
+
+A path is planned for the formation centroid Each UAV follows the centroid trajectory with a fixed offset.
+
+This ensures the formation shape is preserved at all times
+
+requirements.txt
+
+numpy
+
+matplotlib
+
+scipy
