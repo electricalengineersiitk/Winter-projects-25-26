@@ -1,0 +1,15 @@
+cd Winter-projects-25-26
+cd Rajkumar_Ahirwar_240836
+cd NLP-UAV-Project
+
+in ubuntu 
+cd "/mnt/d/ASUS/ArduPilot/ardupilot/ArduCopter" && \
+sim_vehicle.py -v ArduCopter --map --console --out=udp:127.0.0.1:14550 --out=udp:127.0.0.1:14551
+
+
+in ubuntu
+
+
+cd "/mnt/d/ASUS/NLC&C_UAVs/Winter-projects-25-26/Rajkumar_Ahirwar_240836/NLP-UAV-Project"
+source venv-ardupilot/bin/activate
+python3 main_controller.py
