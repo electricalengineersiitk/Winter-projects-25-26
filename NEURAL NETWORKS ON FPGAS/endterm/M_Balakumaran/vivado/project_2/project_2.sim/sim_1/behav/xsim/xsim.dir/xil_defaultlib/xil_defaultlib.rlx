@@ -1,0 +1,9 @@
+0.7
+2020.2
+Nov 14 2025
+19:37:27
+D:/projects/project_2/project_2.sim/sim_1/behav/xsim/glbl.v,1756381829,verilog,,,,glbl,,uvm,,,,,,
+E:/Neural Network in FPGA/src/layer.v,1776176347,systemVerilog,,E:/Neural Network in FPGA/src/neuron.v,E:/Neural Network in FPGA/src/neuron.v,layer_of_neurons,,uvm,../../../../../../vivado/2025.2/Vivado/data/rsb/busdef,,,,,
+E:/Neural Network in FPGA/src/neuron.v,1776176344,systemVerilog,,E:/Neural Network in FPGA/src/top_nn.v,,neuron,,uvm,../../../../../../vivado/2025.2/Vivado/data/rsb/busdef,,,,,
+E:/Neural Network in FPGA/src/top_nn.v,1776181388,systemVerilog,,E:/Neural Network in FPGA/src/top_nn_tb.v,E:/Neural Network in FPGA/src/layer.v,two_layer_network,,uvm,../../../../../../vivado/2025.2/Vivado/data/rsb/busdef,,,,,
+E:/Neural Network in FPGA/src/top_nn_tb.v,1776181318,systemVerilog,,,E:/Neural Network in FPGA/src/top_nn.v,top_nn_tb,,uvm,../../../../../../vivado/2025.2/Vivado/data/rsb/busdef,,,,,
