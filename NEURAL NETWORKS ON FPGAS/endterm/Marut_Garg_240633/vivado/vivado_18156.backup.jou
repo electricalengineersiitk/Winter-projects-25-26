@@ -1,0 +1,48 @@
+#-----------------------------------------------------------
+# Vivado v2025.2 (64-bit)
+# SW Build 6299465 on Fri Nov 14 19:35:11 GMT 2025
+# IP Build 6300035 on Fri Nov 14 10:48:45 MST 2025
+# SharedData Build 6298862 on Thu Nov 13 04:50:51 MST 2025
+# Start of session at: Fri Apr 10 01:10:31 2026
+# Process ID         : 18156
+# Current directory  : C:/Vivado Projects/nn_project
+# Command line       : vivado.exe -gui_launcher_event rodinguilauncherevent22552 C:\Vivado Projects\nn_project\nn_project.xpr
+# Log file           : C:/Vivado Projects/nn_project/vivado.log
+# Journal file       : C:/Vivado Projects/nn_project\vivado.jou
+# Running On         : LAPTOP-M0HQRN51
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26200
+# Processor Detail   : 13th Gen Intel(R) Core(TM) i5-13420H
+# CPU Frequency      : 2611 MHz
+# CPU Physical cores : 8
+# CPU Logical cores  : 12
+# Host memory        : 16802 MB
+# Swap memory        : 13958 MB
+# Total Virtual      : 30761 MB
+# Available Virtual  : 8525 MB
+#-----------------------------------------------------------
+start_gui
+open_project {C:/Vivado Projects/nn_project/nn_project.xpr}
+update_compile_order -fileset sources_1
+launch_simulation
+source tb_neuron.tcl
+close [ open {C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/layer.v} w ]
+add_files {{C:/Vivado Projects/nn_project/nn_project.srcs/sources_1/new/layer.v}}
+update_compile_order -fileset sources_1
+update_compile_order -fileset sources_1
+set_property SOURCE_SET sources_1 [get_filesets sim_1]
+close [ open {C:/Vivado Projects/nn_project/nn_project.srcs/sim_1/new/tb_layer.v} w ]
+add_files -fileset sim_1 {{C:/Vivado Projects/nn_project/nn_project.srcs/sim_1/new/tb_layer.v}}
+update_compile_order -fileset sim_1
+set_property SOURCE_SET sources_1 [get_filesets sim_1]
+add_files -fileset sim_1 -norecurse {{C:/Vivado Projects/nn_project/nn_project.srcs/sim_1/new/weights.mem}}
+update_compile_order -fileset sim_1
+# Disabling source management mode.  This is to allow the top design properties to be set without GUI intervention.
+set_property source_mgmt_mode None [current_project]
+set_property top tb_layer [get_filesets sim_1]
+set_property top_lib xil_defaultlib [get_filesets sim_1]
+# Re-enabling previously disabled source management mode.
+set_property source_mgmt_mode All [current_project]
+update_compile_order -fileset sim_1
+launch_simulation
+close_sim
