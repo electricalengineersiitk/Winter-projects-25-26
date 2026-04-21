@@ -1,0 +1,9 @@
+dronekit==2.9.2
+pymavlink==2.4.41
+openai>=1.0.0
+numpy>=1.24.0
+matplotlib>=3.7.0
+python-dotenv>=1.0.0
+google-generativeai>=0.3.0
+sounddevice>=0.4.6
+scipy>=1.10.0
