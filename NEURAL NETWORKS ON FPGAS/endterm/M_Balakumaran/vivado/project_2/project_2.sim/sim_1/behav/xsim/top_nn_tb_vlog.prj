@@ -1,0 +1,12 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  --include "../../../../../../vivado/2025.2/Vivado/data/rsb/busdef" \
+"E:/Neural Network in FPGA/src/layer.v" \
+"E:/Neural Network in FPGA/src/neuron.v" \
+"E:/Neural Network in FPGA/src/top_nn.v" \
+"E:/Neural Network in FPGA/src/top_nn_tb.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

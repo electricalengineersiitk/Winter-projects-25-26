@@ -1,0 +1,3 @@
+import os
+os.makedirs("/content/end_term/results", exist_ok=True)
+print("Done!")
