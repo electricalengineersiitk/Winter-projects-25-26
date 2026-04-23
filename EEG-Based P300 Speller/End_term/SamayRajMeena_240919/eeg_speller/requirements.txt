@@ -1,0 +1,9 @@
+mne>=1.11.0
+moabb>=1.5.0
+numpy
+scipy
+scikit-learn
+matplotlib
+seaborn
+tensorflow
+pyriemann
