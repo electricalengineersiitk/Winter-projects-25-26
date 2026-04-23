@@ -1,0 +1,106 @@
+output_dir: artifacts
+run_feature_ablation: true
+run_explainability: true
+models:
+  - gcn
+  - graphsage
+  - gat
+
+data:
+  data_dir: data/elliptic
+  use_local_features_only: false
+  standardize: true
+  make_undirected: true
+  train_time_max: 34
+  val_time_max: 39
+
+training:
+  epochs: 60
+  learning_rate: 0.001
+  weight_decay: 0.0005
+  hidden_dim: 128
+  dropout: 0.3
+  heads: 4
+  focal_gamma: 2.0
+  use_focal_loss: true
+  grad_clip: 1.0
+  early_stopping_patience: 12
+  random_seed: 42
+  threshold: 0.5
+  device: auto
+
+model_overrides:
+  gcn:
+    hidden_dim: 128
+    dropout: 0.35
+    learning_rate: 0.001
+    weight_decay: 0.0001
+    use_focal_loss: true
+    focal_gamma: 2.0
+  graphsage:
+    hidden_dim: 128
+    dropout: 0.25
+    learning_rate: 0.001
+    weight_decay: 0.0001
+    use_focal_loss: true
+    focal_gamma: 2.0
+  gat:
+    hidden_dim: 64
+    heads: 6
+    dropout: 0.30
+    learning_rate: 0.0005
+    weight_decay: 0.0001
+    use_focal_loss: false
+    focal_gamma: 1.5
+
+feature_model_overrides:
+  all_features:
+    gcn:
+      hidden_dim: 128
+      dropout: 0.35
+      learning_rate: 0.001
+      weight_decay: 0.0001
+      use_focal_loss: true
+      focal_gamma: 2.0
+      heads: 4
+    graphsage:
+      hidden_dim: 128
+      dropout: 0.25
+      learning_rate: 0.001
+      weight_decay: 0.0001
+      use_focal_loss: true
+      focal_gamma: 2.0
+      heads: 4
+    gat:
+      hidden_dim: 64
+      dropout: 0.30
+      learning_rate: 0.0005
+      weight_decay: 0.0001
+      use_focal_loss: false
+      focal_gamma: 1.5
+      heads: 6
+  local_only_94:
+    gcn:
+      hidden_dim: 128
+      dropout: 0.35
+      learning_rate: 0.0005
+      weight_decay: 0.0001
+      use_focal_loss: false
+      focal_gamma: 1.5
+      heads: 4
+    graphsage:
+      hidden_dim: 128
+      dropout: 0.25
+      learning_rate: 0.0005
+      weight_decay: 0.0001
+      use_focal_loss: false
+      focal_gamma: 1.5
+      heads: 4
+    gat:
+      hidden_dim: 64
+      dropout: 0.30
+      learning_rate: 0.0005
+      weight_decay: 0.0001
+      use_focal_loss: false
+      focal_gamma: 1.5
+      heads: 6
