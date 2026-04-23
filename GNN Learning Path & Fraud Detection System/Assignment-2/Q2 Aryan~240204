@@ -1,0 +1,80 @@
+import numpy as np
+
+# Activation functions
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
+
+def sigmoid_derivative(z):
+    s = sigmoid(z)
+    return s * (1 - s)
+
+
+class MLP:
+    def __init__(self, lr=0.1, epochs=10000):
+        self.lr = lr
+        self.epochs = epochs
+
+        # Xavier-style initialization
+        self.W1 = np.random.randn(2, 2)
+        self.b1 = np.zeros((1, 2))
+        self.W2 = np.random.randn(2, 1)
+        self.b2 = np.zeros((1, 1))
+
+    def forward(self, X):
+        self.z1 = np.dot(X, self.W1) + self.b1
+        self.a1 = sigmoid(self.z1)
+
+        self.z2 = np.dot(self.a1, self.W2) + self.b2
+        self.a2 = sigmoid(self.z2)
+
+        return self.a2
+
+    def backward(self, X, y, output):
+        # Output layer error
+        error_out = output - y
+        dW2 = np.dot(self.a1.T, error_out * sigmoid_derivative(self.z2))
+        db2 = np.sum(error_out * sigmoid_derivative(self.z2), axis=0, keepdims=True)
+
+        # Hidden layer error
+        error_hidden = np.dot(error_out * sigmoid_derivative(self.z2), self.W2.T)
+        dW1 = np.dot(X.T, error_hidden * sigmoid_derivative(self.z1))
+        db1 = np.sum(error_hidden * sigmoid_derivative(self.z1), axis=0, keepdims=True)
+
+        # Gradient descent update
+        self.W2 -= self.lr * dW2
+        self.b2 -= self.lr * db2
+        self.W1 -= self.lr * dW1
+        self.b1 -= self.lr * db1
+
+    def train(self, X, y):
+        for epoch in range(self.epochs):
+            output = self.forward(X)
+            self.backward(X, y, output)
+
+            if epoch % 2000 == 0:
+                loss = np.mean((y - output) ** 2)
+                print(f"Epoch {epoch}, Loss: {loss:.4f}")
+
+    def predict(self, X):
+        output = self.forward(X)
+        return (output > 0.5).astype(int)
+
+
+# XOR Dataset
+X = np.array([
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+])
+
+y = np.array([[0], [1], [1], [0]])
+
+# Train the MLP
+mlp = MLP(lr=0.1, epochs=10000)
+mlp.train(X, y)
+
+# Predictions
+predictions = mlp.predict(X)
+print("\nPredictions:")
+print(predictions)
