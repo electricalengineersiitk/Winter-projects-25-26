@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_layer_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_layer" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="24.936 ns"></ZoomStartTime>
+      <ZoomEndTime time="73.013 ns"></ZoomEndTime>
+      <Cursor1Time time="65.000 ns"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="290"></NameColumnWidth>
+      <ValueColumnWidth column_width="123"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="14" />
+   <wvobject fp_name="/tb_layer/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_layer/rst_n" type="logic">
+      <obj_property name="ElementShortName">rst_n</obj_property>
+      <obj_property name="ObjectShortName">rst_n</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_layer/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_layer/last" type="logic">
+      <obj_property name="ElementShortName">last</obj_property>
+      <obj_property name="ObjectShortName">last</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_layer/data_in" type="array">
+      <obj_property name="ElementShortName">data_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_in[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_layer/out0" type="array">
+      <obj_property name="ElementShortName">out0[15:0]</obj_property>
+      <obj_property name="ObjectShortName">out0[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_layer/out1" type="array">
+      <obj_property name="ElementShortName">out1[15:0]</obj_property>
+      <obj_property name="ObjectShortName">out1[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_layer/out2" type="array">
+      <obj_property name="ElementShortName">out2[15:0]</obj_property>
+      <obj_property name="ObjectShortName">out2[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_layer/out3" type="array">
+      <obj_property name="ElementShortName">out3[15:0]</obj_property>
+      <obj_property name="ObjectShortName">out3[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_layer/out4" type="array">
+      <obj_property name="ElementShortName">out4[15:0]</obj_property>
+      <obj_property name="ObjectShortName">out4[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_layer/out5" type="array">
+      <obj_property name="ElementShortName">out5[15:0]</obj_property>
+      <obj_property name="ObjectShortName">out5[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_layer/out6" type="array">
+      <obj_property name="ElementShortName">out6[15:0]</obj_property>
+      <obj_property name="ObjectShortName">out6[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_layer/out7" type="array">
+      <obj_property name="ElementShortName">out7[15:0]</obj_property>
+      <obj_property name="ObjectShortName">out7[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_layer/valid" type="logic">
+      <obj_property name="ElementShortName">valid</obj_property>
+      <obj_property name="ObjectShortName">valid</obj_property>
+   </wvobject>
+</wave_config>
