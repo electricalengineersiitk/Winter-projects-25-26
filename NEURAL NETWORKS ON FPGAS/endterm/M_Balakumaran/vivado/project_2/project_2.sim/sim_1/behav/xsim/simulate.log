@@ -1,0 +1,27 @@
+Time resolution is 1 ps
+[Layer] START: loading input 0, processing=1
+[Layer] Processing: input_index=0
+[Layer] Loading next input 1
+[Layer] Processing: input_index=1
+[Layer] Loading next input 2
+[Layer] Processing: input_index=2
+[Layer] LAST INPUT: assigning input_index=3, setting last=1
+[Layer] START: loading input 0, processing=1
+[Layer] Processing: input_index=0
+[Layer] Loading next input 1
+[Layer] Processing: input_index=1
+[Layer] Loading next input 2
+[Layer] Processing: input_index=2
+[Layer] Loading next input 3
+[Layer] Processing: input_index=3
+[Layer] Loading next input 4
+[Layer] Processing: input_index=4
+[Layer] Loading next input 5
+[Layer] Processing: input_index=5
+[Layer] Loading next input 6
+[Layer] Processing: input_index=6
+[Layer] LAST INPUT: assigning input_index=7, setting last=1
+out_f[0] = 2251
+out_f[1] = 0
+out_f[2] = 2166
+$finish called at time : 195 ns : File "E:/Neural Network in FPGA/src/top_nn_tb.v" Line 45
