@@ -1,0 +1,14 @@
+{
+  "num_nodes": 4000,
+  "num_labeled": 920,
+  "num_licit": 840,
+  "num_illicit": 80,
+  "num_unknown": 3080,
+  "illicit_ratio_labeled": 0.08695652173913043,
+  "all_feature_dim": 166,
+  "used_feature_dim": 166,
+  "num_edges": 23964,
+  "train_labeled": 624,
+  "val_labeled": 103,
+  "test_labeled": 193
+}
