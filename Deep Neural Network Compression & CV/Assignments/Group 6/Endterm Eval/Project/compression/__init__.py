@@ -1,0 +1,1 @@
+from .pruning import apply_magnitude_pruning, make_pruning_permanent, get_global_sparsity
