@@ -1,0 +1,8 @@
+
+trajectory generation both types
+plot titles labelled axes and legend
+
+Minimum-energy: smooth out accelerations. Prioritises gentle, efficient motion. Use a lower velocity profile with gradual speed changes.
+Use Bézier curves or cubic splines (scipy.interpolate.CubicSpline) to smooth the raw waypoints for both versions. The output for each is a time-stamped list of (x, y, t) positions.
+
+safety margin
